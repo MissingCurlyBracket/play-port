@@ -1,3 +1,5 @@
+const apiKey = import.meta.env.VITE_WATCHMODE_API_KEY;
+
 export interface Source {
   source_id: number;
   name: string;
@@ -41,7 +43,7 @@ export interface TitleApiInterface {
 export default class TitleApi implements TitleApiInterface {
   private readonly apiKey: string;
 
-  constructor(apiKey: string) {
+  constructor() {
     this.apiKey = apiKey;
   }
 

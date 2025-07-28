@@ -31,7 +31,7 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          WATCHMODE_API_KEY: ${{ secrets.WATCHMODE_API_KEY }}
+          VITE_WATCHMODE_API_KEY: ${{ secrets.WATCHMODE_API_KEY }}
 
       - name: Deploy
         run: npm run deploy

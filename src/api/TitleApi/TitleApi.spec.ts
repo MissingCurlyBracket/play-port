@@ -8,8 +8,6 @@ describe('TitleApi', () => {
     vi.clearAllMocks();
   });
 
-  const mockApiKey = 'test-api';
-
   it('fetches streaming sources for a title', async () => {
     const titleId = 42;
     const mockResponse = {
@@ -30,11 +28,11 @@ describe('TitleApi', () => {
       json: async () => mockResponse,
     } as Response);
 
-    const titleApi = new TitleApi(mockApiKey);
+    const titleApi = new TitleApi();
     const result = await titleApi.getStreamingSources(titleId);
     expect(result).toEqual(mockResponse.data);
     expect(fetch).toHaveBeenCalledWith(
-      `https://api.watchmode.com/v1/title/${titleId}/sources/?apiKey=${mockApiKey}`,
+      `https://api.watchmode.com/v1/title/${titleId}/sources/?apiKey=test_api_key`,
     );
   });
 
@@ -47,14 +45,14 @@ describe('TitleApi', () => {
       statusText: errorStatus,
     } as Response);
 
-    const titleApi = new TitleApi(mockApiKey);
+    const titleApi = new TitleApi();
 
     await expect(titleApi.getStreamingSources(titleId)).rejects.toThrow(
       `Error fetching streaming sources: ${errorStatus}`,
     );
 
     expect(fetch).toHaveBeenCalledWith(
-      `https://api.watchmode.com/v1/title/${titleId}/sources/?apiKey=${mockApiKey}`,
+      `https://api.watchmode.com/v1/title/${titleId}/sources/?apiKey=test_api_key`,
     );
   });
 });

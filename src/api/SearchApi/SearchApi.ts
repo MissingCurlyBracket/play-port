@@ -1,5 +1,7 @@
 import type { Title } from '../TitleApi/TitleApi.ts';
 
+const apiKey = import.meta.env.VITE_WATCHMODE_API_KEY;
+
 interface Person {
   id: number;
   name: string;
@@ -17,7 +19,7 @@ export interface SearchApiInterface {
 export default class SearchApi implements SearchApiInterface {
   private readonly apiKey: string;
 
-  constructor(apiKey: string) {
+  constructor() {
     this.apiKey = apiKey;
   }
 

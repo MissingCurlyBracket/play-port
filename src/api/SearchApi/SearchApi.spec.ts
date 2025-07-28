@@ -8,8 +8,6 @@ describe('SearchApi', () => {
     vi.clearAllMocks();
   });
 
-  const mockApiKey = 'test-api';
-
   it('searches by name', async () => {
     const name = 'Inception';
     const mockResponse = {
@@ -29,12 +27,12 @@ describe('SearchApi', () => {
       json: async () => mockResponse,
     } as Response);
 
-    const searchApi = new SearchApi(mockApiKey);
+    const searchApi = new SearchApi();
     const result = await searchApi.getByName(name);
 
     expect(result).toEqual(mockResponse.data);
     expect(fetch).toHaveBeenCalledWith(
-      `https://api.watchmode.com/v1/search/?apiKey=${mockApiKey}&search_field=name&search_value=${encodeURIComponent(name)}`,
+      `https://api.watchmode.com/v1/search/?apiKey=test_api_key&search_field=name&search_value=${encodeURIComponent(name)}`,
     );
   });
 
@@ -47,14 +45,14 @@ describe('SearchApi', () => {
       statusText: errorStatus,
     } as Response);
 
-    const searchApi = new SearchApi(mockApiKey);
+    const searchApi = new SearchApi();
 
     await expect(searchApi.getByName(name)).rejects.toThrow(
       `Error fetching search results: ${errorStatus}`,
     );
 
     expect(fetch).toHaveBeenCalledWith(
-      `https://api.watchmode.com/v1/search/?apiKey=${mockApiKey}&search_field=name&search_value=${encodeURIComponent(name)}`,
+      `https://api.watchmode.com/v1/search/?apiKey=test_api_key&search_field=name&search_value=${encodeURIComponent(name)}`,
     );
   });
 });
