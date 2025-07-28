@@ -1,5 +1,6 @@
 {
   "name": "play-port",
+  "homepage": "https://missingcurlybracket.github.io/play-port/",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,10 +11,13 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "chai": "^5.2.1",
+    "gh-pages": "^6.3.0",
     "jsdom": "^26.1.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
