@@ -3,10 +3,10 @@ import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
 import './App.css';
 
+const apiKey = import.meta.env.VITE_WATCHMODE_API_KEY;
+
 function App() {
   const [count, setCount] = useState(0);
-
-  const apiKey = import.meta.env.VITE_WATCHMODE_API_KEY;
 
   return (
     <>
