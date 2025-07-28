@@ -8,19 +8,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20'
-          
+          node-version: '18'
+
+      - name: Configure git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
       - name: Install dependencies
         run: npm install
-        
+
       - name: Build
         run: npm run build
         env:
-          WATCHMODE_API_KEY: ${{ secrets.WATCHMODE_API_KEY }}
-          
+          REACT_APP_API_KEY: ${{ secrets.WATCHMODE_API_KEY }}
+
       - name: Deploy
         run: npm run deploy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
