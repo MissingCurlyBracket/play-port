@@ -10,7 +10,7 @@ interface Person {
   tmdb_id: number;
 }
 
-type SearchResult = Title | Person;
+export type SearchResult = Title | Person;
 
 export interface SearchApiInterface {
   getByName(name: string): Promise<SearchResult[]>;
