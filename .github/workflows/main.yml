@@ -35,3 +35,5 @@ jobs:
 
       - name: Deploy
         run: npm run deploy
+        env:
+          VITE_WATCHMODE_API_KEY: ${{ secrets.WATCHMODE_API_KEY }}
