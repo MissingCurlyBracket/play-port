@@ -12,13 +12,19 @@ describe('SearchApi', () => {
     const name = 'Inception';
     const mockResponse = {
       data: {
-        id: 1,
-        name: 'Inception',
-        type: 'movie',
-        year: 2010,
-        imdb_id: 'tt1375666',
-        tmdb_id: 27205,
-        tmdb_type: 'movie',
+        title_results: [
+          {
+            resultType: 'title',
+            id: 1,
+            name: 'Inception',
+            type: 'movie',
+            year: 2010,
+            imdb_id: 'tt1375666',
+            tmdb_id: 27205,
+            tmdb_type: 'movie',
+          },
+        ],
+        people_results: [],
       },
     };
 

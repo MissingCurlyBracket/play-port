@@ -2,18 +2,22 @@ import type { Title } from '../TitleApi/TitleApi.ts';
 
 const apiKey = import.meta.env.VITE_WATCHMODE_API_KEY;
 
-interface Person {
+export interface Person {
+  resultType: 'person';
   id: number;
   name: string;
-  main_profession: string;
-  imdb_id: string;
-  tmdb_id: number;
+  main_profession: string | null;
+  imdb_id: string | null;
+  tmdb_id: number | null;
 }
 
-export type SearchResult = Title | Person;
+export interface SearchResult {
+  title_results: Title[];
+  people_results: Person[];
+}
 
 export interface SearchApiInterface {
-  getByName(name: string): Promise<SearchResult[]>;
+  getByName(name: string): Promise<SearchResult>;
 }
 
 export default class SearchApi implements SearchApiInterface {
@@ -23,7 +27,7 @@ export default class SearchApi implements SearchApiInterface {
     this.apiKey = apiKey;
   }
 
-  async getByName(name: string): Promise<SearchResult[]> {
+  async getByName(name: string): Promise<SearchResult> {
     const response = await fetch(
       `https://api.watchmode.com/v1/search/?apiKey=${this.apiKey}&search_field=name&search_value=${encodeURIComponent(name)}`,
     );

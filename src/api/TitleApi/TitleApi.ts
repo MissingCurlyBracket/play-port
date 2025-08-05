@@ -14,27 +14,16 @@ export interface Source {
   episodes?: number;
 }
 
-export interface Movie {
+export interface Title {
+  resultType: 'title';
   id: number;
   name: string;
-  type: 'movie';
+  type: string;
   year: number;
   imdb_id: string;
   tmdb_id: number;
   tmdb_type: string;
 }
-
-export interface TvSeries {
-  id: number;
-  name: string;
-  type: 'tv_series';
-  year: number;
-  imdb_id: string;
-  tmdb_id: number;
-  tmdb_type: 'tv';
-}
-
-export type Title = Movie | TvSeries;
 
 export interface TitleApiInterface {
   getStreamingSources(titleId: number): Promise<Source[]>;
