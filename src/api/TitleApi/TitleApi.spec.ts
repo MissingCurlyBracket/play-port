@@ -30,7 +30,7 @@ describe('TitleApi', () => {
 
     const titleApi = new TitleApi();
     const result = await titleApi.getStreamingSources(titleId);
-    expect(result).toEqual(mockResponse.data);
+    expect(result).toEqual(mockResponse);
     expect(fetch).toHaveBeenCalledWith(
       `https://api.watchmode.com/v1/title/${titleId}/sources/?apiKey=test_api_key`,
     );

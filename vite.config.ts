@@ -16,5 +16,5 @@ export default defineConfig({
     }),
     react(),
   ],
-  base: '/play-port',
+  base: '/play-port/',
 });

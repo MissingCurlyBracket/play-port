@@ -36,7 +36,7 @@ describe('SearchApi', () => {
     const searchApi = new SearchApi();
     const result = await searchApi.getByName(name);
 
-    expect(result).toEqual(mockResponse.data);
+    expect(result).toEqual(mockResponse);
     expect(fetch).toHaveBeenCalledWith(
       `https://api.watchmode.com/v1/search/?apiKey=test_api_key&search_field=name&search_value=${encodeURIComponent(name)}`,
     );

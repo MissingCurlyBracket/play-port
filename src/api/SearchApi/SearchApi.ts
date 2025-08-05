@@ -36,7 +36,6 @@ export default class SearchApi implements SearchApiInterface {
       throw new Error(`Error fetching search results: ${response.statusText}`);
     }
 
-    const { data } = await response.json();
-    return data;
+    return await response.json();
   }
 }

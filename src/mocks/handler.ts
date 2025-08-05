@@ -61,7 +61,7 @@ export const handlers = [
       });
     }
 
-    return HttpResponse.json({ data: mockResults });
+    return HttpResponse.json(mockResults);
   }),
 
   http.get('*', ({ request }) => {

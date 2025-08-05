@@ -47,7 +47,6 @@ export default class TitleApi implements TitleApiInterface {
       );
     }
 
-    const { data } = await response.json();
-    return data;
+    return await response.json();
   }
 }
