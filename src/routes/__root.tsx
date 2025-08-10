@@ -17,12 +17,20 @@ interface RouterContext {
 export const Route = createRootRouteWithContext<RouterContext>()({
   component: () => (
     <>
-      <div className="p-2 flex gap-2">
+      <div
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          zIndex: 100,
+          padding: '16px',
+          background: 'inherit',
+        }}
+      >
         <Link to="/" className="[&.active]:font-bold">
           Home
         </Link>
       </div>
-      <hr />
       <Outlet />
       <TanStackRouterDevtools />
     </>

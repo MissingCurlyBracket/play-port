@@ -3,6 +3,17 @@ import { type ReactElement, useState } from 'react';
 import type { SearchResult } from '../api/SearchApi/SearchApi.ts';
 import TitleCard from '../components/TitleCard.tsx';
 import PersonCard from '../components/PersonCard.tsx';
+import {
+  Alert,
+  Box,
+  CircularProgress,
+  Container,
+  IconButton,
+  Paper,
+  TextField,
+  Typography,
+} from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 
 interface MainPageProps {
   searchFn: (title: string) => Promise<SearchResult>;
@@ -33,55 +44,175 @@ export default function MainPage({
   };
 
   return (
-    <div className="main-page">
-      <h1>Search Movies & TV Shows</h1>
-      <form onSubmit={handleSubmit} className="search-form">
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Enter movie or TV show title..."
-          className="search-input"
-        />
-        <button type="submit" className="search-button" disabled={isLoading}>
-          {isLoading ? 'Searching...' : 'Search'}
-        </button>
-      </form>
+    <>
+      <Box
+        sx={{
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          zIndex: 10,
+          background: 'inherit',
+          pt: 3,
+          pb: 2,
+        }}
+      >
+        <Typography variant="h3" component="h1" align="center" gutterBottom>
+          Search Movies & TV Shows
+        </Typography>
+        <Box
+          component="form"
+          onSubmit={handleSubmit}
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '100%',
+            maxWidth: 600,
+            px: 2,
+          }}
+        >
+          <Paper
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              width: '100%',
+              boxShadow: 3,
+            }}
+          >
+            <TextField
+              fullWidth
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Enter movie or TV show title..."
+              variant="outlined"
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    border: 'none',
+                  },
+                },
+              }}
+            />
+            <IconButton
+              type="submit"
+              disabled={isLoading}
+              sx={{ p: 2, borderRadius: 0 }}
+            >
+              {isLoading ? <CircularProgress size={24} /> : <SearchIcon />}
+            </IconButton>
+          </Paper>
+        </Box>
+      </Box>
 
-      {error && <div className="error-message">Error: {error}</div>}
-
-      {searchResults && (
-        <div className="search-results">
-          {searchResults.title_results.length > 0 && (
-            <section className="titles-section">
-              <h2>Titles ({searchResults.title_results.length})</h2>
-              <ul className="results-list">
-                {searchResults.title_results.map((title) => (
-                  <TitleCard key={title.id} title={title} />
-                ))}
-              </ul>
-            </section>
+      <Container maxWidth="lg" sx={{ pt: 20 }}>
+        <Box
+          sx={{
+            py: 4,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          {error && (
+            <Alert
+              severity="error"
+              sx={{ mb: 3, width: '100%', maxWidth: 600 }}
+            >
+              {error}
+            </Alert>
           )}
 
-          {searchResults.people_results.length > 0 && (
-            <section className="people-section">
-              <h2>People ({searchResults.people_results.length})</h2>
-              <ul className="results-list">
-                {searchResults.people_results.map((person) => (
-                  <PersonCard key={person.id} person={person} />
-                ))}
-              </ul>
-            </section>
-          )}
+          {searchResults && (
+            <Box
+              sx={{
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}
+            >
+              {searchResults.title_results.length > 0 && (
+                <Box
+                  sx={{
+                    mb: 4,
+                    width: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Typography
+                    variant="h4"
+                    component="h2"
+                    gutterBottom
+                    align="center"
+                  >
+                    Titles ({searchResults.title_results.length})
+                  </Typography>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      width: '100%',
+                    }}
+                  >
+                    {searchResults.title_results.map((title) => (
+                      <TitleCard key={title.id} title={title} />
+                    ))}
+                  </Box>
+                </Box>
+              )}
 
-          {searchResults.title_results.length === 0 &&
-            searchResults.people_results.length === 0 && (
-              <div className="no-results">
-                No results found for "{searchTerm}"
-              </div>
-            )}
-        </div>
-      )}
-    </div>
+              {searchResults.people_results.length > 0 && (
+                <Box
+                  sx={{
+                    mb: 4,
+                    width: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Typography
+                    variant="h4"
+                    component="h2"
+                    gutterBottom
+                    align="center"
+                  >
+                    People ({searchResults.people_results.length})
+                  </Typography>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      width: '100%',
+                    }}
+                  >
+                    {searchResults.people_results.map((person) => (
+                      <PersonCard key={person.id} person={person} />
+                    ))}
+                  </Box>
+                </Box>
+              )}
+
+              {searchResults.title_results.length === 0 &&
+                searchResults.people_results.length === 0 && (
+                  <Box sx={{ textAlign: 'center', py: 4 }}>
+                    <Typography variant="h6" color="text.secondary">
+                      No results found for "{searchTerm}"
+                    </Typography>
+                  </Box>
+                )}
+            </Box>
+          )}
+        </Box>
+      </Container>
+    </>
   );
 }

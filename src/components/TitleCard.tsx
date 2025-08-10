@@ -10,7 +10,7 @@ export default function TitleCard({
   title,
 }: Readonly<TitleCardProps>): ReactElement {
   return (
-    <li className="title-card">
+    <div className="title-card">
       <div className="title-card-content">
         <Link to="/title/$id" params={{ id: title.id.toString() }}>
           {title.name}
@@ -43,6 +43,6 @@ export default function TitleCard({
           )}
         </div>
       </div>
-    </li>
+    </div>
   );
 }

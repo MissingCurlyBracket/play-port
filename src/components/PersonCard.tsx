@@ -9,7 +9,7 @@ export default function PersonCard({
   person,
 }: Readonly<PersonCardProps>): ReactElement {
   return (
-    <li className="person-card">
+    <div className="person-card">
       <div className="person-card-content">
         <h3 className="person-name">{person.name}</h3>
         {person.main_profession && (
@@ -38,6 +38,6 @@ export default function PersonCard({
           )}
         </div>
       </div>
-    </li>
+    </div>
   );
 }
