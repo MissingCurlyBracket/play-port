@@ -9,9 +9,9 @@ export interface Source {
   android_url: string;
   web_url: string;
   format: string;
-  price?: number;
-  seasons?: number;
-  episodes?: number;
+  price: number | null;
+  seasons: number | null;
+  episodes: number | null;
 }
 
 export interface Title {

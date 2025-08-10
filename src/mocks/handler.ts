@@ -1,7 +1,8 @@
 import { http, HttpResponse } from 'msw';
 import type { SearchResult } from '../api/SearchApi/SearchApi.ts';
+import type { Source } from '../api/TitleApi/TitleApi.ts';
 
-const mockResults: SearchResult = {
+const mockSearchResults: SearchResult = {
   title_results: [
     {
       resultType: 'title',
@@ -46,6 +47,35 @@ const mockResults: SearchResult = {
   ],
 };
 
+const mockStreamingSources: Source[] = [
+  {
+    source_id: 203,
+    name: 'Netflix',
+    type: 'sub',
+    region: 'US',
+    ios_url: 'https://www.netflix.com/title/123456',
+    android_url: 'https://www.netflix.com/title/123456',
+    web_url: 'https://www.netflix.com/title/123456',
+    format: 'HD',
+    price: null,
+    seasons: null,
+    episodes: null,
+  },
+  {
+    source_id: 201,
+    name: 'Disney +',
+    type: 'sub',
+    region: 'US',
+    ios_url: 'https://www.netflix.com/title/123456',
+    android_url: 'https://www.netflix.com/title/123456',
+    web_url: 'https://www.netflix.com/title/123456',
+    format: 'HD',
+    price: null,
+    seasons: null,
+    episodes: null,
+  },
+];
+
 export const handlers = [
   http.get('https://api.watchmode.com/v1/search/', ({ request }) => {
     console.log('MSW intercepted:', request.url);
@@ -61,7 +91,12 @@ export const handlers = [
       });
     }
 
-    return HttpResponse.json(mockResults);
+    return HttpResponse.json(mockSearchResults);
+  }),
+
+  http.get('https://api.watchmode.com/v1/title/*/sources/', ({ request }) => {
+    console.log('MSW intercepted:', request.url);
+    return HttpResponse.json(mockStreamingSources);
   }),
 
   http.get('*', ({ request }) => {

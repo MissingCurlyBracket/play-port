@@ -1,7 +1,7 @@
 import { StrictMode } from 'react';
 import './index.css';
 import {
-  createMemoryHistory,
+  createHashHistory,
   createRouter,
   RouterProvider,
 } from '@tanstack/react-router';
@@ -10,13 +10,15 @@ import ReactDOM from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import SearchApi from './api/SearchApi/SearchApi.ts';
+import TitleApi from './api/TitleApi/TitleApi.ts';
 
-const memoryHistory = createMemoryHistory({ initialEntries: ['/'] });
+const queryClient = new QueryClient();
 const searchApi = new SearchApi();
+const titleApi = new TitleApi();
 const router = createRouter({
   routeTree,
-  context: { searchApi },
-  history: memoryHistory,
+  context: { searchApi, titleApi, queryClient },
+  history: createHashHistory(),
 });
 
 // Register the router instance for type safety
@@ -27,10 +29,9 @@ declare module '@tanstack/react-router' {
 
   interface RouteContext {
     searchApi: SearchApi;
+    queryClient: QueryClient;
   }
 }
-
-const queryClient = new QueryClient();
 
 async function initializeApp() {
   if (import.meta.env.DEV) {

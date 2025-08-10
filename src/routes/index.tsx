@@ -10,6 +10,7 @@ function Index() {
   const { searchApi } = Route.useRouteContext();
 
   const searchMutation = useMutation({
+    mutationKey: ['search'],
     mutationFn: async (name: string) => await searchApi.getByName(name),
   });
 
