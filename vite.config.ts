@@ -17,4 +17,13 @@ export default defineConfig({
     react(),
   ],
   base: '/play-port/',
+  build: {
+    rollupOptions: {
+      output: {
+        entryFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash].[ext]',
+        chunkFileNames: 'assets/[name]-[hash].js',
+      },
+    },
+  },
 });
