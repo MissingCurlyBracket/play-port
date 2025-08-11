@@ -50,7 +50,6 @@ export default function MainPage({
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          position: 'fixed',
           top: 0,
           left: 0,
           zIndex: 10,
@@ -107,7 +106,7 @@ export default function MainPage({
         </Box>
       </Box>
 
-      <Container maxWidth="lg" sx={{ pt: 20 }}>
+      <Container maxWidth="lg" sx={{ pt: 4 }}>
         <Box
           sx={{
             py: 4,
