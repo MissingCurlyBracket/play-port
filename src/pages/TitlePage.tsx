@@ -8,14 +8,16 @@ export interface TitlePageProps {
 export default function TitlePage({ sources }: TitlePageProps) {
   return (
     <div className={'source-card ml-15'}>
-      {sources?.map((source) => (
-        <SourceCard
-          name={source.name}
-          url={source.web_url}
-          nrOfSeasons={source.seasons}
-          format={source.format}
-        />
-      ))}
+      {sources
+        ?.sort((a, b) => b.seasons - a.seasons)
+        .map((source) => (
+          <SourceCard
+            name={source.name}
+            url={source.web_url}
+            nrOfSeasons={source.seasons}
+            format={source.format}
+          />
+        ))}
     </div>
   );
 }

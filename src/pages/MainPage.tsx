@@ -134,9 +134,11 @@ export default function MainPage({
                 alignItems: 'center',
               }}
             >
-              {searchResults.title_results.map((title) => (
-                <TitleCard key={title.id} title={title} />
-              ))}
+              {searchResults.title_results
+                .sort((a, b) => b.year - a.year)
+                .map((title) => (
+                  <TitleCard key={title.id} title={title} />
+                ))}
 
               {searchResults.title_results.length === 0 && (
                 <Box sx={{ textAlign: 'center', py: 4 }}>

@@ -54,12 +54,14 @@ export default function SourceCard({
               {name}
             </Typography>
             <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-              <Chip
-                label={format}
-                size="small"
-                variant="outlined"
-                color="primary"
-              />
+              {format && (
+                <Chip
+                  label={format}
+                  size="small"
+                  variant="outlined"
+                  color="primary"
+                />
+              )}
               {nrOfSeasons && nrOfSeasons !== 0 && (
                 <Typography
                   variant="body2"
