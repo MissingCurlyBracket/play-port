@@ -4,6 +4,12 @@ import { useQuery } from '@tanstack/react-query';
 
 export const Route = createFileRoute('/title/$id')({
   component: TitleComponent,
+  loader: async ({ context: { queryClient, titleApi }, params: { id } }) => {
+    await queryClient.prefetchQuery({
+      queryKey: ['sources', id],
+      queryFn: async () => await titleApi.getStreamingSources(Number(id)),
+    });
+  },
 });
 
 function TitleComponent() {
