@@ -9,7 +9,7 @@ export default function TitlePage({ sources }: TitlePageProps) {
   return (
     <div className={'source-card ml-15'}>
       {sources
-        ?.sort((a, b) => b.seasons - a.seasons)
+        ?.sort((a, b) => (b.seasons ?? 0) - (a.seasons ?? 0))
         .map((source) => (
           <SourceCard
             name={source.name}
