@@ -1,5 +1,3 @@
-import type { ReactElement } from 'react';
-import type { Title } from '../api/TitleApi/TitleApi.ts';
 import {
   Box,
   Card,
@@ -8,21 +6,24 @@ import {
   Chip,
   Typography,
 } from '@mui/material';
-import { useNavigate } from '@tanstack/react-router';
-import convertType from '../helpers/convertType.ts';
 
-interface TitleCardProps {
-  title: Title;
+interface SourceCardProps {
+  name: string;
+  url: string;
+  nrOfSeasons: number | null;
+  format: string;
 }
 
-export default function TitleCard({
-  title,
-}: Readonly<TitleCardProps>): ReactElement {
-  const navigate = useNavigate();
+export default function SourceCard({
+  name,
+  url,
+  nrOfSeasons,
+  format,
+}: Readonly<SourceCardProps>) {
   return (
     <Card sx={{ width: '50vw', mb: 2 }}>
       <CardActionArea
-        onClick={() => navigate({ to: `/title/${title.id}` })}
+        onClick={() => window.open(url, '_blank')}
         sx={{
           '&:hover': {
             backgroundColor: 'action.selectedHover',
@@ -50,22 +51,24 @@ export default function TitleCard({
                 whiteSpace: 'nowrap',
               }}
             >
-              {title.name}
+              {name}
             </Typography>
             <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
               <Chip
-                label={convertType(title.type)}
+                label={format}
                 size="small"
                 variant="outlined"
                 color="primary"
               />
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{ minWidth: 'fit-content' }}
-              >
-                ({title.year})
-              </Typography>
+              {nrOfSeasons && (
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ minWidth: 'fit-content' }}
+                >
+                  {nrOfSeasons} Season(s)
+                </Typography>
+              )}
             </Box>
           </Box>
         </CardContent>

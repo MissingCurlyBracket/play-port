@@ -1,5 +1,13 @@
 import type { ReactElement } from 'react';
 import type { Person } from '../api/SearchApi/SearchApi.ts';
+import {
+  Box,
+  Card,
+  CardActionArea,
+  CardContent,
+  Chip,
+  Typography,
+} from '@mui/material';
 
 interface PersonCardProps {
   person: Person;
@@ -9,35 +17,50 @@ export default function PersonCard({
   person,
 }: Readonly<PersonCardProps>): ReactElement {
   return (
-    <div className="person-card">
-      <div className="person-card-content">
-        <h3 className="person-name">{person.name}</h3>
-        {person.main_profession && (
-          <div className="person-profession">{person.main_profession}</div>
-        )}
-        <div className="person-ids">
-          {person.imdb_id && (
-            <a
-              href={`https://www.imdb.com/name/${person.imdb_id}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="external-link"
+    <Card sx={{ width: '50vw', mb: 2 }}>
+      <CardActionArea
+        sx={{
+          '&:hover': {
+            backgroundColor: 'action.selectedHover',
+          },
+        }}
+      >
+        <CardContent>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              width: '100%',
+            }}
+          >
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{
+                fontWeight: 600,
+                flex: 1,
+                mr: 2,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}
             >
-              IMDb
-            </a>
-          )}
-          {person.tmdb_id && (
-            <a
-              href={`https://www.themoviedb.org/person/${person.tmdb_id}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="external-link"
-            >
-              TMDB
-            </a>
-          )}
-        </div>
-      </div>
-    </div>
+              {person.name}
+            </Typography>
+            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+              {person.main_profession && (
+                <Chip
+                  label={person.main_profession}
+                  size="small"
+                  variant="outlined"
+                  color="primary"
+                />
+              )}
+            </Box>
+          </Box>
+        </CardContent>
+      </CardActionArea>
+    </Card>
   );
 }

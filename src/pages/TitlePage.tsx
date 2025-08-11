@@ -1,4 +1,5 @@
 import type { Source } from '../api/TitleApi/TitleApi.ts';
+import SourceCard from '../components/SourceCard.tsx';
 
 export interface TitlePageProps {
   sources?: Source[];
@@ -6,20 +7,14 @@ export interface TitlePageProps {
 
 export default function TitlePage({ sources }: TitlePageProps) {
   return (
-    <div>
+    <div className={'source-card ml-15'}>
       {sources?.map((source) => (
-        <div key={source.source_id}>
-          <h2>{source.name}</h2>
-          <p>Type: {source.type}</p>
-          <p>Region: {source.region}</p>
-          <p>Format: {source.format}</p>
-          {source.price && <p>Price: ${source.price.toFixed(2)}</p>}
-          {source.seasons && <p>Seasons: {source.seasons}</p>}
-          {source.episodes && <p>Episodes: {source.episodes}</p>}
-          <a href={source.web_url} target="_blank" rel="noopener noreferrer">
-            Watch Now
-          </a>
-        </div>
+        <SourceCard
+          name={source.name}
+          url={source.web_url}
+          nrOfSeasons={source.seasons}
+          format={source.format}
+        />
       ))}
     </div>
   );

@@ -2,7 +2,6 @@ import * as React from 'react';
 import { type ReactElement, useState } from 'react';
 import type { SearchResult } from '../api/SearchApi/SearchApi.ts';
 import TitleCard from '../components/TitleCard.tsx';
-import PersonCard from '../components/PersonCard.tsx';
 import {
   Alert,
   Box,
@@ -135,80 +134,17 @@ export default function MainPage({
                 alignItems: 'center',
               }}
             >
-              {searchResults.title_results.length > 0 && (
-                <Box
-                  sx={{
-                    mb: 4,
-                    width: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Typography
-                    variant="h4"
-                    component="h2"
-                    gutterBottom
-                    align="center"
-                  >
-                    Titles ({searchResults.title_results.length})
+              {searchResults.title_results.map((title) => (
+                <TitleCard key={title.id} title={title} />
+              ))}
+
+              {searchResults.title_results.length === 0 && (
+                <Box sx={{ textAlign: 'center', py: 4 }}>
+                  <Typography variant="h6" color="text.secondary">
+                    No results found for "{searchTerm}"
                   </Typography>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      width: '100%',
-                    }}
-                  >
-                    {searchResults.title_results.map((title) => (
-                      <TitleCard key={title.id} title={title} />
-                    ))}
-                  </Box>
                 </Box>
               )}
-
-              {searchResults.people_results.length > 0 && (
-                <Box
-                  sx={{
-                    mb: 4,
-                    width: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Typography
-                    variant="h4"
-                    component="h2"
-                    gutterBottom
-                    align="center"
-                  >
-                    People ({searchResults.people_results.length})
-                  </Typography>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      width: '100%',
-                    }}
-                  >
-                    {searchResults.people_results.map((person) => (
-                      <PersonCard key={person.id} person={person} />
-                    ))}
-                  </Box>
-                </Box>
-              )}
-
-              {searchResults.title_results.length === 0 &&
-                searchResults.people_results.length === 0 && (
-                  <Box sx={{ textAlign: 'center', py: 4 }}>
-                    <Typography variant="h6" color="text.secondary">
-                      No results found for "{searchTerm}"
-                    </Typography>
-                  </Box>
-                )}
             </Box>
           )}
         </Box>
