@@ -17,7 +17,7 @@ export interface SearchResult {
 }
 
 export interface AutocompleteResult {
-  resultType: 'title';
+  result_type: 'title';
   relevance: number;
   id: number;
   name: string;
@@ -26,7 +26,7 @@ export interface AutocompleteResult {
   imdb_id: string;
   tmdb_id: number;
   tmdb_type: string;
-  imageUrl: string;
+  image_url: string;
 }
 
 export interface AutocompleteResponse {

@@ -132,7 +132,8 @@ export default function MainPage({
               }}
             >
               {searchResults.results
-                .sort((a, b) => b.year - a.year)
+                .sort((a, b) => b.relevance - a.relevance)
+                .slice(0, 10)
                 .map((title) => (
                   <TitleCard key={title.id} title={title} />
                 ))}

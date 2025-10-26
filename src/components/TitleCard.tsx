@@ -40,7 +40,7 @@ export default function TitleCard({
           >
             <Box
               component="img"
-              src={title.imageUrl}
+              src={title.image_url}
               alt={title.name}
               sx={{
                 height: '4em',

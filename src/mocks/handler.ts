@@ -53,7 +53,7 @@ const mockSearchResults: SearchResult = {
 const mockAutocompleteResults: AutocompleteResponse = {
   results: [
     {
-      resultType: 'title',
+      result_type: 'title',
       relevance: 496.91,
       id: 3173903,
       name: 'Breaking Bad',
@@ -62,7 +62,7 @@ const mockAutocompleteResults: AutocompleteResponse = {
       imdb_id: 'tt0903747',
       tmdb_id: 1396,
       tmdb_type: 'tv',
-      imageUrl: 'https://cdn.watchmode.com/posters/03173903_poster_w185.jpg',
+      image_url: 'https://cdn.watchmode.com/posters/03173903_poster_w185.jpg',
     },
   ],
 };
