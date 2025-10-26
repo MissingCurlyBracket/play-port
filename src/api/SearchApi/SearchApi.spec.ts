@@ -1,6 +1,4 @@
 import SearchApi from './SearchApi.ts';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-
 globalThis.fetch = vi.fn();
 
 describe('SearchApi', () => {

@@ -1,46 +1,53 @@
-import * as React from 'react';
-import { type ReactElement, useState } from 'react';
-import type { SearchResult } from '../api/SearchApi/SearchApi.ts';
+import { type ReactElement, useEffect, useState } from 'react';
+import type { AutocompleteResult } from '../api/SearchApi/SearchApi.ts';
 import TitleCard from '../components/TitleCard.tsx';
 import {
   Alert,
   Box,
   CircularProgress,
   Container,
-  IconButton,
   Paper,
   TextField,
   Typography,
 } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
+import { useDebounce } from 'use-debounce';
 
 interface MainPageProps {
-  searchFn: (title: string) => Promise<SearchResult>;
+  autocompleteFn: (title: string) => Promise<AutocompleteResult[]>;
+  error: Error | null;
 }
 
 export default function MainPage({
-  searchFn,
+  autocompleteFn,
+  error,
 }: Readonly<MainPageProps>): ReactElement {
   const [searchTerm, setSearchTerm] = useState('');
-  const [searchResults, setSearchResults] = useState<SearchResult | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [searchResults, setSearchResults] = useState<
+    AutocompleteResult[] | null
+  >(null);
+  const [debouncedSearch] = useDebounce(searchTerm, 400);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchTerm.trim()) {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (!debouncedSearch.trim()) {
+      setSearchResults(null);
+      setIsLoading(false);
+      return;
+    }
+
+    const fetchResults = async () => {
       setIsLoading(true);
-      setError(null);
       try {
-        const results = await searchFn(searchTerm.trim());
+        const results = await autocompleteFn(debouncedSearch.trim());
         setSearchResults(results);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
       } finally {
         setIsLoading(false);
       }
-    }
-  };
+    };
+
+    fetchResults();
+  }, [debouncedSearch, autocompleteFn]);
 
   return (
     <>
@@ -62,8 +69,6 @@ export default function MainPage({
           Search Movies & TV Shows
         </Typography>
         <Box
-          component="form"
-          onSubmit={handleSubmit}
           sx={{
             display: 'flex',
             justifyContent: 'center',
@@ -95,13 +100,7 @@ export default function MainPage({
                 },
               }}
             />
-            <IconButton
-              type="submit"
-              disabled={isLoading}
-              sx={{ p: 2, borderRadius: 0 }}
-            >
-              {isLoading ? <CircularProgress size={24} /> : <SearchIcon />}
-            </IconButton>
+            {isLoading && <CircularProgress />}
           </Paper>
         </Box>
       </Box>
@@ -120,7 +119,7 @@ export default function MainPage({
               severity="error"
               sx={{ mb: 3, width: '100%', maxWidth: 600 }}
             >
-              {error}
+              {error.message}
             </Alert>
           )}
 
@@ -133,13 +132,13 @@ export default function MainPage({
                 alignItems: 'center',
               }}
             >
-              {searchResults.title_results
+              {searchResults
                 .sort((a, b) => b.year - a.year)
                 .map((title) => (
                   <TitleCard key={title.id} title={title} />
                 ))}
 
-              {searchResults.title_results.length === 0 && (
+              {searchResults.length === 0 && (
                 <Box sx={{ textAlign: 'center', py: 4 }}>
                   <Typography variant="h6" color="text.secondary">
                     No results found for "{searchTerm}"

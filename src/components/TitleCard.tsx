@@ -1,5 +1,4 @@
 import type { ReactElement } from 'react';
-import type { Title } from '../api/TitleApi/TitleApi.ts';
 import {
   Box,
   Card,
@@ -10,9 +9,10 @@ import {
 } from '@mui/material';
 import { useNavigate } from '@tanstack/react-router';
 import convertType from '../helpers/convertType.ts';
+import type { AutocompleteResult } from '../api/SearchApi/SearchApi.ts';
 
 interface TitleCardProps {
-  title: Title;
+  title: AutocompleteResult;
 }
 
 export default function TitleCard({
@@ -38,6 +38,17 @@ export default function TitleCard({
               width: '100%',
             }}
           >
+            <Box
+              component="img"
+              src={title.imageUrl}
+              alt={title.name}
+              sx={{
+                height: '4em',
+                width: 'auto',
+                objectFit: 'contain',
+                mr: 2,
+              }}
+            />
             <Typography
               variant="h6"
               component="div"

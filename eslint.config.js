@@ -4,7 +4,7 @@ import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import tseslint from 'typescript-eslint';
 import { globalIgnores } from 'eslint/config';
-import react from '@vitejs/plugin-react';
+import react from 'eslint-plugin-react';
 
 export default tseslint.config([
   globalIgnores(['dist']),
@@ -23,8 +23,6 @@ export default tseslint.config([
     plugins: {
       '@typescript-eslint': tseslint.plugin,
       react: react,
-      'react-hooks': reactHooks,
-      'react-refresh': reactRefresh,
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
@@ -33,5 +31,6 @@ export default tseslint.config([
         { allowConstantExport: true },
       ],
     },
+    ignores: ['**/dist/**', '**/public/**'],
   },
 ]);
