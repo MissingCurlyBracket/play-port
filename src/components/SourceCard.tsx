@@ -62,7 +62,7 @@ export default function SourceCard({
                   color="primary"
                 />
               )}
-              {nrOfSeasons && nrOfSeasons !== 0 && (
+              {nrOfSeasons && (
                 <Typography
                   variant="body2"
                   color="text.secondary"
