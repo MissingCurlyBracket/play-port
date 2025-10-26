@@ -1,5 +1,8 @@
 import { http, HttpResponse } from 'msw';
-import type { SearchResult } from '../api/SearchApi/SearchApi.ts';
+import type {
+  AutocompleteResponse,
+  SearchResult,
+} from '../api/SearchApi/SearchApi.ts';
 import type { Source } from '../api/TitleApi/TitleApi.ts';
 
 const mockSearchResults: SearchResult = {
@@ -47,20 +50,22 @@ const mockSearchResults: SearchResult = {
   ],
 };
 
-const mockAutocompleteResults = [
-  {
-    resultType: 'title',
-    relevance: 496.91,
-    id: 3173903,
-    name: 'Breaking Bad',
-    type: 'tv_series',
-    year: 2008,
-    imdb_id: 'tt0903747',
-    tmdb_id: 1396,
-    tmdb_type: 'tv',
-    imageUrl: 'https://cdn.watchmode.com/posters/03173903_poster_w185.jpg',
-  },
-];
+const mockAutocompleteResults: AutocompleteResponse = {
+  results: [
+    {
+      resultType: 'title',
+      relevance: 496.91,
+      id: 3173903,
+      name: 'Breaking Bad',
+      type: 'tv_series',
+      year: 2008,
+      imdb_id: 'tt0903747',
+      tmdb_id: 1396,
+      tmdb_type: 'tv',
+      imageUrl: 'https://cdn.watchmode.com/posters/03173903_poster_w185.jpg',
+    },
+  ],
+};
 
 const mockStreamingSources: Source[] = [
   {

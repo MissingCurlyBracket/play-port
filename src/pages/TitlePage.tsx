@@ -12,6 +12,7 @@ export default function TitlePage({ sources }: TitlePageProps) {
         ?.sort((a, b) => (b.seasons ?? 0) - (a.seasons ?? 0))
         .map((source) => (
           <SourceCard
+            key={source.name}
             name={source.name}
             url={source.web_url}
             nrOfSeasons={source.seasons}

@@ -1,5 +1,5 @@
 import { type ReactElement, useEffect, useState } from 'react';
-import type { AutocompleteResult } from '../api/SearchApi/SearchApi.ts';
+import type { AutocompleteResponse } from '../api/SearchApi/SearchApi.ts';
 import TitleCard from '../components/TitleCard.tsx';
 import {
   Alert,
@@ -13,7 +13,7 @@ import {
 import { useDebounce } from 'use-debounce';
 
 interface MainPageProps {
-  autocompleteFn: (title: string) => Promise<AutocompleteResult[]>;
+  autocompleteFn: (title: string) => Promise<AutocompleteResponse>;
   error: Error | null;
 }
 
@@ -22,9 +22,8 @@ export default function MainPage({
   error,
 }: Readonly<MainPageProps>): ReactElement {
   const [searchTerm, setSearchTerm] = useState('');
-  const [searchResults, setSearchResults] = useState<
-    AutocompleteResult[] | null
-  >(null);
+  const [searchResults, setSearchResults] =
+    useState<AutocompleteResponse | null>(null);
   const [debouncedSearch] = useDebounce(searchTerm, 400);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -123,7 +122,7 @@ export default function MainPage({
             </Alert>
           )}
 
-          {searchResults && (
+          {searchResults?.results && (
             <Box
               sx={{
                 width: '100%',
@@ -132,13 +131,13 @@ export default function MainPage({
                 alignItems: 'center',
               }}
             >
-              {searchResults
+              {searchResults.results
                 .sort((a, b) => b.year - a.year)
                 .map((title) => (
                   <TitleCard key={title.id} title={title} />
                 ))}
 
-              {searchResults.length === 0 && (
+              {searchResults.results.length === 0 && (
                 <Box sx={{ textAlign: 'center', py: 4 }}>
                   <Typography variant="h6" color="text.secondary">
                     No results found for "{searchTerm}"

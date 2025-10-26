@@ -29,12 +29,16 @@ export interface AutocompleteResult {
   imageUrl: string;
 }
 
+export interface AutocompleteResponse {
+  results: AutocompleteResult[];
+}
+
 export interface SearchApiInterface {
   getByName(name: string): Promise<SearchResult>;
   getAutocomplete(
     name: string,
     type: 1 | 2 | 3 | 4 | 5,
-  ): Promise<AutocompleteResult[]>;
+  ): Promise<AutocompleteResponse>;
 }
 
 export default class SearchApi implements SearchApiInterface {
@@ -59,7 +63,7 @@ export default class SearchApi implements SearchApiInterface {
   async getAutocomplete(
     name: string,
     type: 1 | 2 | 3 | 4 | 5,
-  ): Promise<AutocompleteResult[]> {
+  ): Promise<AutocompleteResponse> {
     const response = await fetch(
       `https://api.watchmode.com/v1/autocomplete-search/?apiKey=${this.apiKey}&search_value=${encodeURIComponent(name)}&search_type=${type}`,
     );
