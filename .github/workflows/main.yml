@@ -44,3 +44,5 @@ jobs:
 
       - name: Deploy GitHub Pages
         run: npm run deploy
+        env:
+          VITE_API_BASE_URL: ${{ secrets.API_BASE_URL }}
