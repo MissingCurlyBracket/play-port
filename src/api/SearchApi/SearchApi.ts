@@ -1,6 +1,6 @@
 import type { Title } from '../TitleApi/TitleApi.ts';
 
-const apiKey = import.meta.env.VITE_WATCHMODE_API_KEY;
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
 export interface Person {
   resultType: 'person';
@@ -42,15 +42,15 @@ export interface SearchApiInterface {
 }
 
 export default class SearchApi implements SearchApiInterface {
-  private readonly apiKey: string;
+  private readonly baseUrl: string;
 
   constructor() {
-    this.apiKey = apiKey;
+    this.baseUrl = apiBaseUrl;
   }
 
   async getByName(name: string): Promise<SearchResult> {
     const response = await fetch(
-      `https://api.watchmode.com/v1/search/?apiKey=${this.apiKey}&search_field=name&search_value=${encodeURIComponent(name)}`,
+      `${this.baseUrl}/search?name=${encodeURIComponent(name)}`,
     );
 
     if (!response.ok) {
@@ -65,7 +65,7 @@ export default class SearchApi implements SearchApiInterface {
     type: 1 | 2 | 3 | 4 | 5,
   ): Promise<AutocompleteResponse> {
     const response = await fetch(
-      `https://api.watchmode.com/v1/autocomplete-search/?apiKey=${this.apiKey}&search_value=${encodeURIComponent(name)}&search_type=${type}`,
+      `${this.baseUrl}/autocomplete?name=${encodeURIComponent(name)}&type=${type}`,
     );
 
     if (!response.ok) {

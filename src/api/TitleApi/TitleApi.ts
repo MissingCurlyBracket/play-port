@@ -1,4 +1,4 @@
-const apiKey = import.meta.env.VITE_WATCHMODE_API_KEY;
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
 export interface Source {
   source_id: number;
@@ -30,16 +30,14 @@ export interface TitleApiInterface {
 }
 
 export default class TitleApi implements TitleApiInterface {
-  private readonly apiKey: string;
+  private readonly baseUrl: string;
 
   constructor() {
-    this.apiKey = apiKey;
+    this.baseUrl = apiBaseUrl;
   }
 
   async getStreamingSources(titleId: number): Promise<Source[]> {
-    const response = await fetch(
-      `https://api.watchmode.com/v1/title/${titleId}/sources/?apiKey=${this.apiKey}`,
-    );
+    const response = await fetch(`${this.baseUrl}/title/${titleId}/sources`);
 
     if (!response.ok) {
       throw new Error(

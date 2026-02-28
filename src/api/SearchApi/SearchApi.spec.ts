@@ -36,7 +36,7 @@ describe('SearchApi', () => {
 
     expect(result).toEqual(mockResponse);
     expect(fetch).toHaveBeenCalledWith(
-      `https://api.watchmode.com/v1/search/?apiKey=test_api_key&search_field=name&search_value=${encodeURIComponent(name)}`,
+      `${import.meta.env.VITE_API_BASE_URL}/search?name=${encodeURIComponent(name)}`,
     );
   });
 
@@ -56,7 +56,7 @@ describe('SearchApi', () => {
     );
 
     expect(fetch).toHaveBeenCalledWith(
-      `https://api.watchmode.com/v1/search/?apiKey=test_api_key&search_field=name&search_value=${encodeURIComponent(name)}`,
+      `${import.meta.env.VITE_API_BASE_URL}/search?name=${encodeURIComponent(name)}`,
     );
   });
 });

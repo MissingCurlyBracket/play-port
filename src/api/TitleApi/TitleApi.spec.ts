@@ -31,7 +31,7 @@ describe('TitleApi', () => {
     const result = await titleApi.getStreamingSources(titleId);
     expect(result).toEqual(mockResponse);
     expect(fetch).toHaveBeenCalledWith(
-      `https://api.watchmode.com/v1/title/${titleId}/sources/?apiKey=test_api_key`,
+      `${import.meta.env.VITE_API_BASE_URL}/title/${titleId}/sources`,
     );
   });
 
@@ -51,7 +51,7 @@ describe('TitleApi', () => {
     );
 
     expect(fetch).toHaveBeenCalledWith(
-      `https://api.watchmode.com/v1/title/${titleId}/sources/?apiKey=test_api_key`,
+      `${import.meta.env.VITE_API_BASE_URL}/title/${titleId}/sources`,
     );
   });
 });

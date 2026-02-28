@@ -97,39 +97,34 @@ const mockStreamingSources: Source[] = [
 ];
 
 export const handlers = [
-  http.get('https://api.watchmode.com/v1/search/', ({ request }) => {
-    console.log('MSW intercepted:', request.url);
+  http.get('*/search', ({ request }) => {
+    console.log('MSW intercepted: ', request.url);
     const url = new URL(request.url);
-    const searchValue = url.searchParams.get('search_value');
+    const name = url.searchParams.get('name');
 
-    if (!searchValue) {
+    if (!name) {
       return HttpResponse.json({
-        data: {
-          title_results: [],
-          people_results: [],
-        },
+        title_results: [],
+        people_results: [],
       });
     }
 
     return HttpResponse.json(mockSearchResults);
   }),
 
-  http.get('https://api.watchmode.com/v1/title/*/sources/', ({ request }) => {
-    console.log('MSW intercepted:', request.url);
+  http.get('*/title/:id/sources', ({ request }) => {
+    console.log('MSW intercepted: ', request.url);
     return HttpResponse.json(mockStreamingSources);
   }),
 
-  http.get(
-    'https://api.watchmode.com/v1/autocomplete-search/',
-    ({ request }) => {
-      console.log('MSW intercepted:', request.url);
-      return HttpResponse.json(mockAutocompleteResults);
-    },
-  ),
+  http.get('*/autocomplete', ({ request }) => {
+    console.log('MSW intercepted: ', request.url);
+    return HttpResponse.json(mockAutocompleteResults);
+  }),
 
   http.get('*', ({ request }) => {
     if (request.url.includes('api.watchmode.com')) {
-      console.log('Unhandled request:', request.url);
+      console.log('Unhandled request: ', request.url);
     }
     return;
   }),
