@@ -6,6 +6,7 @@ provider:
   region: eu-central-1
   environment:
     WATCHMODE_API_KEY: ${env:WATCHMODE_API_KEY}
+    TMDB_READ_ACCESS_TOKEN: ${env:TMDB_READ_ACCESS_TOKEN}
 
 functions:
   searchByName:
@@ -13,6 +14,30 @@ functions:
     events:
       - httpApi:
           path: /search
+          method: get
+  searchMovie:
+    handler: functions/handler.searchMovie
+    events:
+      - httpApi:
+          path: /search/movie
+          method: get
+  searchTv:
+    handler: functions/handler.searchTv
+    events:
+      - httpApi:
+          path: /search/tv
+          method: get
+  getMovieProviders:
+    handler: functions/handler.getMovieProviders
+    events:
+      - httpApi:
+          path: /movie/{movieId}/providers
+          method: get
+  getTvProviders:
+    handler: functions/handler.getTvProviders
+    events:
+      - httpApi:
+          path: /tv/{seriesId}/providers
           method: get
   autocomplete:
     handler: functions/handler.autocomplete
