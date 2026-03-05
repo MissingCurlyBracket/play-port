@@ -2,7 +2,7 @@ service: play-port-api
 
 provider:
   name: aws
-  runtime: nodejs20.x
+  runtime: nodejs24.x
   region: eu-central-1
   environment:
     WATCHMODE_API_KEY: ${env:WATCHMODE_API_KEY}

@@ -373,10 +373,16 @@ export const getRegions = async () => {
 
     const data = (await response.json()) as TmdbRegionsResponse;
 
-    return data.results.map((region: Region) => ({
+    const results = data.results.map((region: Region) => ({
       code: region.iso_3166_1,
       name: region.english_name,
     }));
+
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify(results),
+    };
   } catch {
     return {
       statusCode: 500,
