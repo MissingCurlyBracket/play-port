@@ -61,6 +61,12 @@ interface TmdbSearchResponse<T> {
   total_results: number;
 }
 
+interface Region {
+  iso_3166_1: string;
+  english_name: string;
+  native_name: string;
+}
+
 export const search = async (event: APIGatewayProxyEvent) => {
   const apiKey = getTmdbAccessToken();
   const name = event.queryStringParameters?.name;
@@ -329,6 +335,44 @@ export const getTvProviders = async (event: APIGatewayProxyEvent) => {
       headers,
       body: JSON.stringify(Array.from(allProviders.values())),
     };
+  } catch {
+    return {
+      statusCode: 500,
+      headers,
+      body: JSON.stringify({ error: 'Internal server error' }),
+    };
+  }
+};
+
+export const getRegions = async () => {
+  const apiKey = getTmdbAccessToken();
+
+  try {
+    const response = await fetch(
+      `https://api.themoviedb.org/3/watch/providers/regions`,
+      {
+        method: 'GET',
+        headers: {
+          accept: 'application/json',
+          Authorization: `Bearer ${apiKey}`,
+        },
+      },
+    );
+
+    if (!response.ok) {
+      return {
+        statusCode: response.status,
+        headers,
+        body: JSON.stringify({ error: await response.text() }),
+      };
+    }
+
+    const data = await response.json();
+
+    return data.results.map((region: Region) => ({
+      code: region.iso_3166_1,
+      name: region.english_name,
+    }));
   } catch {
     return {
       statusCode: 500,

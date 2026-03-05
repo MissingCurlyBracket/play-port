@@ -44,6 +44,13 @@ const mockProviders: Provider[] = [
   },
 ];
 
+const mockRegions = [
+  { code: 'US', name: 'United States' },
+  { code: 'GB', name: 'United Kingdom' },
+  { code: 'CA', name: 'Canada' },
+  { code: 'RO', name: 'Romania' },
+];
+
 export const handlers = [
   http.get('*/search', ({ request }) => {
     console.log('MSW intercepted: ', request.url);
@@ -79,6 +86,11 @@ export const handlers = [
     }
 
     return HttpResponse.json(mockProviders);
+  }),
+
+  http.get('*/regions', ({ request }) => {
+    console.log('MSW intercepted: ', request.url);
+    return HttpResponse.json(mockRegions);
   }),
 
   http.get('*', ({ request }) => {

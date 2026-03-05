@@ -15,13 +15,15 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
+import RegionApi from './api/RegionsApi.ts';
 
 const queryClient = new QueryClient();
 const searchApi = new SearchApi();
 const titleApi = new TitleApi();
+const regionApi = new RegionApi();
 const router = createRouter({
   routeTree,
-  context: { searchApi, titleApi, queryClient },
+  context: { searchApi, titleApi, regionApi, queryClient },
   history: createHashHistory(),
 });
 

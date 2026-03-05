@@ -27,6 +27,12 @@ functions:
       - httpApi:
           path: /tv/{seriesId}/providers
           method: get
+  getRegions:
+    handler: functions/handler.getRegions
+    events:
+      - httpApi:
+          path: /regions
+          method: get
 
 plugins:
   - serverless-offline
