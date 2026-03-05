@@ -13,10 +13,9 @@ function Index() {
 
   const searchMutation = useMutation({
     mutationKey: ['search'],
-    mutationFn: async (name: string) =>
-      await searchApi.getAutocomplete(name, 2),
+    mutationFn: async (name: string) => await searchApi.search({ name }),
     onError: (error: Error | null) => setError(error),
   }).mutateAsync;
 
-  return <MainPage autocompleteFn={searchMutation} error={error} />;
+  return <MainPage searchFn={searchMutation} error={error} />;
 }

@@ -1,24 +1,16 @@
-import type { Source } from '../api/TitleApi/TitleApi.ts';
+import type { Provider } from '../api/TitleApi.ts';
 import SourceCard from '../components/SourceCard.tsx';
 
 export interface TitlePageProps {
-  sources?: Source[];
+  providers?: Provider[];
 }
 
-export default function TitlePage({ sources }: TitlePageProps) {
+export default function TitlePage({ providers }: TitlePageProps) {
   return (
     <div className={'source-card ml-15'}>
-      {sources
-        ?.sort((a, b) => (b.seasons ?? 0) - (a.seasons ?? 0))
-        .map((source) => (
-          <SourceCard
-            key={source.name}
-            name={source.name}
-            url={source.web_url}
-            nrOfSeasons={source.seasons}
-            format={source.format}
-          />
-        ))}
+      {providers?.map((provider) => (
+        <SourceCard key={provider.provider_id} name={provider.provider_name} />
+      ))}
     </div>
   );
 }

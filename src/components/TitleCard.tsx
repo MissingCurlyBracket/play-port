@@ -9,10 +9,10 @@ import {
 } from '@mui/material';
 import { useNavigate } from '@tanstack/react-router';
 import convertType from '../helpers/convertType.ts';
-import type { AutocompleteResult } from '../api/SearchApi/SearchApi.ts';
+import type { SearchResult } from '../api/SearchApi.ts';
 
 interface TitleCardProps {
-  title: AutocompleteResult;
+  title: SearchResult;
 }
 
 export default function TitleCard({
@@ -22,7 +22,9 @@ export default function TitleCard({
   return (
     <Card sx={{ width: '50vw', mb: 2 }}>
       <CardActionArea
-        onClick={() => navigate({ to: `/title/${title.id}` })}
+        onClick={() =>
+          navigate({ to: `/title/${title.media_type}/${title.id}` })
+        }
         sx={{
           '&:hover': {
             backgroundColor: 'action.selectedHover',
@@ -36,19 +38,9 @@ export default function TitleCard({
               justifyContent: 'space-between',
               alignItems: 'center',
               width: '100%',
+              mb: 1,
             }}
           >
-            <Box
-              component="img"
-              src={title.image_url}
-              alt={title.name}
-              sx={{
-                height: '4em',
-                width: 'auto',
-                objectFit: 'contain',
-                mr: 2,
-              }}
-            />
             <Typography
               variant="h6"
               component="div"
@@ -61,11 +53,11 @@ export default function TitleCard({
                 whiteSpace: 'nowrap',
               }}
             >
-              {title.name}
+              {title.title}
             </Typography>
             <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
               <Chip
-                label={convertType(title.type)}
+                label={convertType(title.media_type)}
                 size="small"
                 variant="outlined"
                 color="primary"
@@ -75,10 +67,13 @@ export default function TitleCard({
                 color="text.secondary"
                 sx={{ minWidth: 'fit-content' }}
               >
-                ({title.year})
+                ({title.release_date})
               </Typography>
             </Box>
           </Box>
+          <Typography variant="body2" color="text.secondary">
+            {title.overview}
+          </Typography>
         </CardContent>
       </CardActionArea>
     </Card>

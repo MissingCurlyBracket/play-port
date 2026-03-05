@@ -9,23 +9,11 @@ provider:
     TMDB_READ_ACCESS_TOKEN: ${env:TMDB_READ_ACCESS_TOKEN}
 
 functions:
-  searchByName:
-    handler: functions/handler.searchByName
+  search:
+    handler: functions/handler.search
     events:
       - httpApi:
           path: /search
-          method: get
-  searchMovie:
-    handler: functions/handler.searchMovie
-    events:
-      - httpApi:
-          path: /search/movie
-          method: get
-  searchTv:
-    handler: functions/handler.searchTv
-    events:
-      - httpApi:
-          path: /search/tv
           method: get
   getMovieProviders:
     handler: functions/handler.getMovieProviders
@@ -38,18 +26,6 @@ functions:
     events:
       - httpApi:
           path: /tv/{seriesId}/providers
-          method: get
-  autocomplete:
-    handler: functions/handler.autocomplete
-    events:
-      - httpApi:
-          path: /autocomplete
-          method: get
-  getStreamingSources:
-    handler: functions/handler.getStreamingSources
-    events:
-      - httpApi:
-          path: /title/{id}/sources
           method: get
 
 plugins:

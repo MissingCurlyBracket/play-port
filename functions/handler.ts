@@ -11,7 +11,7 @@ declare var process: {
 };
 
 const headers = {
-  'Access-Control-Allow-Origin': '*', // Adjust as needed for production
+  'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Credentials': true,
   'Content-Type': 'application/json',
 };
@@ -33,18 +33,18 @@ interface WatchmodeSource {
   episodes: number;
 }
 
-interface TmdbMovieResult {
+interface TmdbMultiSearchResult {
   id: number;
-  original_title: string;
-  overview: string;
-  release_date: string;
-}
-
-interface TmdbTvResult {
-  id: number;
-  original_name: string;
-  overview: string;
-  first_air_date: string;
+  media_type: 'movie' | 'tv' | 'person';
+  overview?: string;
+  // Movie specific
+  title?: string;
+  original_title?: string;
+  release_date?: string;
+  // TV specific
+  name?: string;
+  original_name?: string;
+  first_air_date?: string;
 }
 
 interface TmdbProvider {
@@ -219,7 +219,7 @@ export const getStreamingSources = async (
   }
 };
 
-export const searchMovie = async (event: APIGatewayProxyEvent) => {
+export const search = async (event: APIGatewayProxyEvent) => {
   const apiKey = getTmdbAccessToken();
   const name = event.queryStringParameters?.name;
 
@@ -233,7 +233,7 @@ export const searchMovie = async (event: APIGatewayProxyEvent) => {
 
   try {
     const response = await fetch(
-      `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(name)}`,
+      `https://api.themoviedb.org/3/search/multi?query=${encodeURIComponent(name)}`,
       {
         method: 'GET',
         headers: {
@@ -252,16 +252,36 @@ export const searchMovie = async (event: APIGatewayProxyEvent) => {
     }
 
     const { results } =
-      (await response.json()) as TmdbSearchResponse<TmdbMovieResult>;
+      (await response.json()) as TmdbSearchResponse<TmdbMultiSearchResult>;
 
-    const filteredResults = results.map((result) => {
-      return {
-        id: result.id,
-        title: result.original_title,
-        overview: result.overview,
-        release_date: result.release_date,
-      };
-    });
+    const filteredResults = results
+      .filter(
+        (result) => result.media_type === 'movie' || result.media_type === 'tv',
+      )
+      .map((result) => {
+        let title = '';
+        let release_date = '';
+
+        if (result.media_type === 'movie') {
+          title = result.title || result.original_title || '';
+          release_date = result.release_date
+            ? result.release_date.split('-')[0]
+            : '';
+        } else if (result.media_type === 'tv') {
+          title = result.name || result.original_name || '';
+          release_date = result.first_air_date
+            ? result.first_air_date.split('-')[0]
+            : '';
+        }
+
+        return {
+          id: result.id,
+          title,
+          overview: result.overview || '',
+          release_date,
+          media_type: result.media_type,
+        };
+      });
 
     return {
       statusCode: 200,
@@ -358,64 +378,6 @@ export const getMovieProviders = async (event: APIGatewayProxyEvent) => {
       statusCode: 200,
       headers,
       body: JSON.stringify(Array.from(allProviders.values())),
-    };
-  } catch {
-    return {
-      statusCode: 500,
-      headers,
-      body: JSON.stringify({ error: 'Internal server error' }),
-    };
-  }
-};
-
-export const searchTv = async (event: APIGatewayProxyEvent) => {
-  const apiKey = getTmdbAccessToken();
-  const name = event.queryStringParameters?.name;
-
-  if (!name) {
-    return {
-      statusCode: 400,
-      headers,
-      body: JSON.stringify({ error: 'Missing name parameter' }),
-    };
-  }
-
-  try {
-    const response = await fetch(
-      `https://api.themoviedb.org/3/search/tv?query=${encodeURIComponent(name)}`,
-      {
-        method: 'GET',
-        headers: {
-          accept: 'application/json',
-          Authorization: `Bearer ${apiKey}`,
-        },
-      },
-    );
-
-    if (!response.ok) {
-      return {
-        statusCode: response.status,
-        headers,
-        body: JSON.stringify({ error: await response.text() }),
-      };
-    }
-
-    const { results } =
-      (await response.json()) as TmdbSearchResponse<TmdbTvResult>;
-
-    const filteredResults = results.map((result) => {
-      return {
-        id: result.id,
-        title: result.original_name,
-        overview: result.overview,
-        first_air_date: result.first_air_date,
-      };
-    });
-
-    return {
-      statusCode: 200,
-      headers,
-      body: JSON.stringify(filteredResults),
     };
   } catch {
     return {

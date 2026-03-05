@@ -1,5 +1,5 @@
 import { type ReactElement, useEffect, useState } from 'react';
-import type { AutocompleteResponse } from '../api/SearchApi/SearchApi.ts';
+import type { SearchResult } from '../api/SearchApi.ts';
 import TitleCard from '../components/TitleCard.tsx';
 import {
   Alert,
@@ -13,24 +13,23 @@ import {
 import { useDebounce } from 'use-debounce';
 
 interface MainPageProps {
-  autocompleteFn: (title: string) => Promise<AutocompleteResponse>;
+  searchFn: (title: string) => Promise<SearchResult[]>;
   error: Error | null;
 }
 
 export default function MainPage({
-  autocompleteFn,
+  searchFn,
   error,
 }: Readonly<MainPageProps>): ReactElement {
   const [searchTerm, setSearchTerm] = useState('');
-  const [searchResults, setSearchResults] =
-    useState<AutocompleteResponse | null>(null);
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [debouncedSearch] = useDebounce(searchTerm, 400);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (!debouncedSearch.trim()) {
-      setSearchResults(null);
+      setSearchResults([]);
       setIsLoading(false);
       return;
     }
@@ -38,7 +37,7 @@ export default function MainPage({
     const fetchResults = async () => {
       setIsLoading(true);
       try {
-        const results = await autocompleteFn(debouncedSearch.trim());
+        const results = await searchFn(debouncedSearch.trim());
         setSearchResults(results);
       } finally {
         setIsLoading(false);
@@ -46,7 +45,7 @@ export default function MainPage({
     };
 
     fetchResults();
-  }, [debouncedSearch, autocompleteFn]);
+  }, [debouncedSearch, searchFn]);
 
   return (
     <>
@@ -122,7 +121,7 @@ export default function MainPage({
             </Alert>
           )}
 
-          {searchResults?.results && (
+          {searchResults.length > 0 ? (
             <Box
               sx={{
                 width: '100%',
@@ -131,21 +130,19 @@ export default function MainPage({
                 alignItems: 'center',
               }}
             >
-              {searchResults.results
-                .sort((a, b) => b.relevance - a.relevance)
-                .slice(0, 10)
-                .map((title) => (
-                  <TitleCard key={title.id} title={title} />
-                ))}
-
-              {searchResults.results.length === 0 && (
-                <Box sx={{ textAlign: 'center', py: 4 }}>
-                  <Typography variant="h6" color="text.secondary">
-                    No results found for "{searchTerm}"
-                  </Typography>
-                </Box>
-              )}
+              {searchResults.map((title) => (
+                <TitleCard key={title.id} title={title} />
+              ))}
             </Box>
+          ) : (
+            searchTerm &&
+            !isLoading && (
+              <Box sx={{ textAlign: 'center', py: 4 }}>
+                <Typography variant="h6" color="text.secondary">
+                  No results found for "{searchTerm}"
+                </Typography>
+              </Box>
+            )
           )}
         </Box>
       </Container>

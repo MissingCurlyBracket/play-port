@@ -9,9 +9,9 @@ import {
 
 interface SourceCardProps {
   name: string;
-  url: string;
-  nrOfSeasons: number | null;
-  format: string;
+  url?: string;
+  nrOfSeasons?: number | null;
+  format?: string;
 }
 
 export default function SourceCard({
@@ -23,10 +23,12 @@ export default function SourceCard({
   return (
     <Card sx={{ width: '50vw', mb: 2 }}>
       <CardActionArea
-        onClick={() => window.open(url, '_blank')}
+        onClick={() => url && window.open(url, '_blank')}
+        disabled={!url}
         sx={{
           '&:hover': {
-            backgroundColor: 'action.selectedHover',
+            backgroundColor: url ? 'action.selectedHover' : 'inherit',
+            cursor: url ? 'pointer' : 'default',
           },
         }}
       >
@@ -62,7 +64,7 @@ export default function SourceCard({
                   color="primary"
                 />
               )}
-              {nrOfSeasons !== null && nrOfSeasons !== 0 && (
+              {nrOfSeasons && (
                 <Typography
                   variant="body2"
                   color="text.secondary"
