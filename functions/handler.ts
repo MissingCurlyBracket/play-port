@@ -40,6 +40,19 @@ interface TmdbProvider {
   provider_name: string;
 }
 
+interface Region {
+  iso_3166_1: string;
+  english_name: string;
+  native_name: string;
+}
+
+interface TmdbSearchResponse<T> {
+  page: number;
+  results: T[];
+  total_pages: number;
+  total_results: number;
+}
+
 interface TmdbProvidersResponse {
   id: number;
   results: {
@@ -54,17 +67,8 @@ interface TmdbProvidersResponse {
   };
 }
 
-interface TmdbSearchResponse<T> {
-  page: number;
-  results: T[];
-  total_pages: number;
-  total_results: number;
-}
-
-interface Region {
-  iso_3166_1: string;
-  english_name: string;
-  native_name: string;
+interface TmdbRegionsResponse {
+  results: Region[];
 }
 
 export const search = async (event: APIGatewayProxyEvent) => {
@@ -367,7 +371,7 @@ export const getRegions = async () => {
       };
     }
 
-    const data = await response.json();
+    const data = (await response.json()) as TmdbRegionsResponse;
 
     return data.results.map((region: Region) => ({
       code: region.iso_3166_1,
