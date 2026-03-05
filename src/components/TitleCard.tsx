@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react';
+import { type ReactElement, useMemo } from 'react';
 import {
   Box,
   Card,
@@ -19,6 +19,13 @@ export default function TitleCard({
   title,
 }: Readonly<TitleCardProps>): ReactElement {
   const navigate = useNavigate();
+  const overview = useMemo(() => {
+    return (
+      title.overview.split(' ').slice(0, 50).join(' ') +
+      (title.overview.split(' ').length > 50 ? '...' : '')
+    );
+  }, [title.overview]);
+
   return (
     <Card sx={{ width: '50vw', mb: 2 }}>
       <CardActionArea
@@ -41,6 +48,19 @@ export default function TitleCard({
               mb: 1,
             }}
           >
+            {title.poster_url && (
+              <Box
+                component="img"
+                src={title.poster_url}
+                alt={title.title}
+                sx={{
+                  height: '4em',
+                  width: 'auto',
+                  objectFit: 'contain',
+                  mr: 2,
+                }}
+              />
+            )}
             <Typography
               variant="h6"
               component="div"
@@ -62,17 +82,19 @@ export default function TitleCard({
                 variant="outlined"
                 color="primary"
               />
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{ minWidth: 'fit-content' }}
-              >
-                ({title.release_date})
-              </Typography>
+              {title.release_date && (
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ minWidth: 'fit-content' }}
+                >
+                  ({title.release_date})
+                </Typography>
+              )}
             </Box>
           </Box>
           <Typography variant="body2" color="text.secondary">
-            {title.overview}
+            {overview}
           </Typography>
         </CardContent>
       </CardActionArea>

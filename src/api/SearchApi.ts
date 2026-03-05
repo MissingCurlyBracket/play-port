@@ -4,6 +4,7 @@ export interface SearchResult {
   overview: string;
   release_date: string;
   media_type: string;
+  poster_url?: string;
 }
 
 export interface SearchApiInterface {

@@ -7,9 +7,10 @@ const mockSearchResults: SearchResult[] = [
     id: 120982,
     title: 'Alan Partridge: Alpha Papa',
     overview:
-      'To save his job, a famous radio DJ gets caught in a siege at his station and has to work with the police to diffuse the situation.',
+      'To save his job, a famous radio DJ gets caught in a siege at his station and has to work with the police to diffuse the situation. However, things take a turn for the worse when the siege becomes a national media event. Alan sees this as an opportunity to revitalize his career and regain his status as a beloved broadcaster. But as the tension mounts and the police presence grows, Alan must decide between his own ego and the safety of the hostages. Will he become the hero he always dreamt of being, or will his antics lead to disaster? The situation spirals out of control with hilarious and dangerous consequences.',
     media_type: 'movie',
     release_date: '2013',
+    poster_url: 'https://placehold.co/92x138',
   },
   {
     id: 46583,
@@ -17,6 +18,7 @@ const mockSearchResults: SearchResult[] = [
     overview: 'A look back at the life of Alan Partridge.',
     media_type: 'movie',
     release_date: '2017',
+    poster_url: 'https://placehold.co/92x138',
   },
   {
     id: 35370,
@@ -25,6 +27,7 @@ const mockSearchResults: SearchResult[] = [
       'Alan Davies acts as host to four guests from the world of comedy and entertainment. The guests are all unprepared and have no idea what is going to happen.',
     media_type: 'tv',
     release_date: '2014',
+    poster_url: 'https://placehold.co/92x138',
   },
 ];
 
@@ -32,10 +35,12 @@ const mockProviders: Provider[] = [
   {
     provider_id: 8,
     provider_name: 'Netflix',
+    logo_url: 'https://placehold.co/92x92',
   },
   {
     provider_id: 337,
     provider_name: 'Disney Plus',
+    logo_url: 'https://placehold.co/92x92',
   },
 ];
 

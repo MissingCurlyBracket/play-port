@@ -12,6 +12,7 @@ interface SourceCardProps {
   url?: string;
   nrOfSeasons?: number | null;
   format?: string;
+  logo?: string;
 }
 
 export default function SourceCard({
@@ -19,6 +20,7 @@ export default function SourceCard({
   url,
   nrOfSeasons,
   format,
+  logo,
 }: Readonly<SourceCardProps>) {
   return (
     <Card sx={{ width: '50vw', mb: 2 }}>
@@ -41,20 +43,42 @@ export default function SourceCard({
               width: '100%',
             }}
           >
-            <Typography
-              variant="h6"
-              component="div"
+            <Box
               sx={{
-                fontWeight: 600,
+                display: 'flex',
+                alignItems: 'center',
                 flex: 1,
                 mr: 2,
                 overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
               }}
             >
-              {name}
-            </Typography>
+              {logo && (
+                <Box
+                  component="img"
+                  src={logo}
+                  alt={name}
+                  sx={{
+                    width: 40,
+                    height: 40,
+                    objectFit: 'contain',
+                    mr: 2,
+                    borderRadius: 1,
+                  }}
+                />
+              )}
+              <Typography
+                variant="h6"
+                component="div"
+                sx={{
+                  fontWeight: 600,
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {name}
+              </Typography>
+            </Box>
             <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
               {format && (
                 <Chip
