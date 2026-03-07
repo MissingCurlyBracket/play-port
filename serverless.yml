@@ -33,6 +33,12 @@ functions:
       - httpApi:
           path: /regions
           method: get
+  getAvailableProviders:
+    handler: functions/handler.getAvailableProviders
+    events:
+      - httpApi:
+          path: /providers
+          method: get
 
 plugins:
   - serverless-offline

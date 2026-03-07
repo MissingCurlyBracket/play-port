@@ -71,6 +71,18 @@ interface TmdbRegionsResponse {
   results: Region[];
 }
 
+interface TmdbAvailableProvider {
+  display_priorities: any;
+  display_priority: number;
+  logo_path: string;
+  provider_id: number;
+  provider_name: string;
+}
+
+interface TmdbAvailableProvidersResponse {
+  results: TmdbAvailableProvider[];
+}
+
 export const search = async (event: APIGatewayProxyEvent) => {
   const apiKey = getTmdbAccessToken();
   const name = event.queryStringParameters?.name;
@@ -376,6 +388,79 @@ export const getRegions = async () => {
     const results = data.results.map((region: Region) => ({
       code: region.iso_3166_1,
       name: region.english_name,
+    }));
+
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify(results),
+    };
+  } catch {
+    return {
+      statusCode: 500,
+      headers,
+      body: JSON.stringify({ error: 'Internal server error' }),
+    };
+  }
+};
+
+export const getAvailableProviders = async (event: APIGatewayProxyEvent) => {
+  const apiKey = getTmdbAccessToken();
+  const region = event.queryStringParameters?.region;
+
+  try {
+    const movieResponse = await fetch(
+      `https://api.themoviedb.org/3/watch/providers/movie?watch_region=${region}`,
+      {
+        method: 'GET',
+        headers: {
+          accept: 'application/json',
+          Authorization: `Bearer ${apiKey}`,
+        },
+      },
+    );
+
+    const tvResponse = await fetch(
+      `https://api.themoviedb.org/3/watch/providers/tv?watch_region=${region}`,
+      {
+        method: 'GET',
+        headers: {
+          accept: 'application/json',
+          Authorization: `Bearer ${apiKey}`,
+        },
+      },
+    );
+
+    if (!movieResponse.ok || !tvResponse.ok) {
+      const errorText = !movieResponse.ok
+        ? await movieResponse.text()
+        : await tvResponse.text();
+      return {
+        statusCode: !movieResponse.ok
+          ? movieResponse.status
+          : tvResponse.status,
+        headers,
+        body: JSON.stringify({ error: errorText }),
+      };
+    }
+
+    const movieData =
+      (await movieResponse.json()) as TmdbAvailableProvidersResponse;
+    const tvData = (await tvResponse.json()) as TmdbAvailableProvidersResponse;
+
+    const providersMap = new Map<number, TmdbAvailableProvider>();
+    [...movieData.results, ...tvData.results].forEach((provider) => {
+      if (!providersMap.has(provider.provider_id)) {
+        providersMap.set(provider.provider_id, provider);
+      }
+    });
+
+    const results = Array.from(providersMap.values()).map((provider) => ({
+      provider_id: provider.provider_id,
+      provider_name: provider.provider_name,
+      logo_url: provider.logo_path
+        ? `https://image.tmdb.org/t/p/w92/${provider.logo_path}`
+        : '',
     }));
 
     return {
