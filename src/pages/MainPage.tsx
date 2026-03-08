@@ -12,7 +12,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useDebounce } from 'use-debounce';
-import type { Region } from '../api/RegionsApi.ts';
+import type { Region } from '../api/RegionApi.ts';
 
 interface MainPageProps {
   searchFn: (title: string) => Promise<SearchResult[]>;

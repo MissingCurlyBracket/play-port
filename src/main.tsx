@@ -15,7 +15,7 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
-import RegionApi from './api/RegionsApi.ts';
+import RegionApi from './api/RegionApi.ts';
 
 const queryClient = new QueryClient();
 const searchApi = new SearchApi();

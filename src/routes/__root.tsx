@@ -7,7 +7,7 @@ import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 import type SearchApi from '../api/SearchApi.ts';
 import type { QueryClient } from '@tanstack/react-query';
 import type TitleApi from '../api/TitleApi.ts';
-import type RegionApi from '../api/RegionsApi.ts';
+import type RegionApi from '../api/RegionApi.ts';
 
 interface RouterContext {
   searchApi: SearchApi;
