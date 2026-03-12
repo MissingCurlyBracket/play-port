@@ -4,7 +4,6 @@ import type { APIGatewayProxyEvent } from 'aws-lambda';
 // eslint-disable-next-line no-var
 declare var process: {
   env: {
-    WATCHMODE_API_KEY: string;
     TMDB_READ_ACCESS_TOKEN: string;
     [key: string]: string | undefined;
   };
