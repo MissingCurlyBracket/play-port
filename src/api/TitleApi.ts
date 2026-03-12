@@ -9,6 +9,7 @@ export interface TitleApiInterface {
     type: 'movie' | 'tv';
     id: number;
     region?: string;
+    providers?: string;
   }): Promise<Provider[]>;
 }
 
@@ -23,14 +24,19 @@ export default class TitleApi implements TitleApiInterface {
     type,
     id,
     region,
+    providers,
   }: {
     type: 'movie' | 'tv';
     id: number;
     region?: string;
+    providers?: string;
   }): Promise<Provider[]> {
     const url = new URL(`${this.baseUrl}/${type}/${id}/providers`);
     if (region) {
       url.searchParams.append('region', region);
+    }
+    if (providers) {
+      url.searchParams.append('providers', providers);
     }
 
     const response = await fetch(url.toString());

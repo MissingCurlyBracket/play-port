@@ -72,7 +72,7 @@ interface TmdbRegionsResponse {
 }
 
 interface TmdbAvailableProvider {
-  display_priorities: any;
+  display_priorities: unknown;
   display_priority: number;
   logo_path: string;
   provider_id: number;
@@ -170,6 +170,11 @@ export const getMovieProviders = async (event: APIGatewayProxyEvent) => {
   const apiKey = getTmdbAccessToken();
   const movieId = event.pathParameters?.movieId;
   const region = event.queryStringParameters?.region;
+  const providersParam = event.queryStringParameters?.providers;
+
+  const providerIds = providersParam
+    ? new Set(providersParam.split(',').map(Number))
+    : null;
 
   if (!movieId) {
     return {
@@ -202,15 +207,17 @@ export const getMovieProviders = async (event: APIGatewayProxyEvent) => {
     const data = (await response.json()) as TmdbProvidersResponse;
     if (region) {
       if (data.results && data.results[region]) {
-        const providers = (data.results[region]!.flatrate || []).map(
-          (provider) => ({
+        const providers = (data.results[region]!.flatrate || [])
+          .filter(
+            (provider) => !providerIds || providerIds.has(provider.provider_id),
+          )
+          .map((provider) => ({
             provider_id: provider.provider_id,
             provider_name: provider.provider_name,
             logo_url: provider.logo_path
               ? `https://image.tmdb.org/t/p/w92/${provider.logo_path}`
               : '',
-          }),
-        );
+          }));
 
         return {
           statusCode: 200,
@@ -235,7 +242,10 @@ export const getMovieProviders = async (event: APIGatewayProxyEvent) => {
         const regionData = data.results[key];
         if (regionData && regionData.flatrate) {
           regionData.flatrate.forEach((provider) => {
-            if (!allProviders.has(provider.provider_id)) {
+            if (
+              !allProviders.has(provider.provider_id) &&
+              (!providerIds || providerIds.has(provider.provider_id))
+            ) {
               allProviders.set(provider.provider_id, {
                 provider_id: provider.provider_id,
                 provider_name: provider.provider_name,
@@ -267,6 +277,11 @@ export const getTvProviders = async (event: APIGatewayProxyEvent) => {
   const apiKey = getTmdbAccessToken();
   const seriesId = event.pathParameters?.seriesId;
   const region = event.queryStringParameters?.region;
+  const providersParam = event.queryStringParameters?.providers;
+
+  const providerIds = providersParam
+    ? new Set(providersParam.split(',').map(Number))
+    : null;
 
   if (!seriesId) {
     return {
@@ -299,15 +314,17 @@ export const getTvProviders = async (event: APIGatewayProxyEvent) => {
     const data = (await response.json()) as TmdbProvidersResponse;
     if (region) {
       if (data.results && data.results[region]) {
-        const providers = (data.results[region]!.flatrate || []).map(
-          (provider) => ({
+        const providers = (data.results[region]!.flatrate || [])
+          .filter(
+            (provider) => !providerIds || providerIds.has(provider.provider_id),
+          )
+          .map((provider) => ({
             provider_id: provider.provider_id,
             provider_name: provider.provider_name,
             logo_url: provider.logo_path
               ? `https://image.tmdb.org/t/p/w92/${provider.logo_path}`
               : '',
-          }),
-        );
+          }));
 
         return {
           statusCode: 200,
@@ -332,7 +349,10 @@ export const getTvProviders = async (event: APIGatewayProxyEvent) => {
         const regionData = data.results[key];
         if (regionData && regionData.flatrate) {
           regionData.flatrate.forEach((provider) => {
-            if (!allProviders.has(provider.provider_id)) {
+            if (
+              !allProviders.has(provider.provider_id) &&
+              (!providerIds || providerIds.has(provider.provider_id))
+            ) {
               allProviders.set(provider.provider_id, {
                 provider_id: provider.provider_id,
                 provider_name: provider.provider_name,
