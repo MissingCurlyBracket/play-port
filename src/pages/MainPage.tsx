@@ -1,25 +1,16 @@
 import { type ReactElement, useEffect, useState } from 'react';
 import type { SearchResult } from '../api/SearchApi.ts';
 import type { Provider } from '../api/TitleApi.ts';
-import TitleCard from '../components/TitleCard.tsx';
-import {
-  Alert,
-  Autocomplete,
-  Box,
-  Button,
-  CircularProgress,
-  Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Paper,
-  TextField,
-  Typography,
-} from '@mui/material';
-import { useDebounce } from 'use-debounce';
 import type { Region } from '../api/RegionApi.ts';
+import { useDebounce } from 'use-debounce';
 import SettingsIcon from '@mui/icons-material/Settings';
+import BaseButton from '../components/atoms/BaseButton.tsx';
+import BaseBox from '../components/atoms/BaseBox.tsx';
+import BaseTypography from '../components/atoms/BaseTypography.tsx';
+import TitleItem from '../components/molecules/TitleItem.tsx';
+import SearchBar from '../components/molecules/SearchBar.tsx';
+import PreferencesDialog from '../components/organisms/PreferencesDialog.tsx';
+import MainPageTemplate from '../components/templates/MainPageTemplate.tsx';
 
 interface MainPageProps {
   searchFn: (title: string) => Promise<SearchResult[]>;
@@ -43,7 +34,6 @@ export default function MainPage({
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalRegion, setModalRegion] = useState<Region | null>(null);
   const [modalProviders, setModalProviders] = useState<Provider[]>([]);
@@ -98,10 +88,7 @@ export default function MainPage({
     }
   };
 
-  const handleModalRegionChange = async (
-    _event: unknown,
-    newValue: Region | null,
-  ) => {
+  const handleModalRegionChange = async (newValue: Region | null) => {
     setModalRegion(newValue);
     setModalSelectedProviders([]);
     if (newValue) {
@@ -160,177 +147,65 @@ export default function MainPage({
   }, [debouncedSearch, searchFn]);
 
   return (
-    <>
-      <Box
-        sx={{
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          top: 0,
-          left: 0,
-          zIndex: 10,
-          background: 'inherit',
-          pt: 3,
-          pb: 2,
-        }}
-      >
-        <Typography variant="h3" component="h1" align="center" gutterBottom>
-          Search Movies & TV Shows
-        </Typography>
-
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            width: '100%',
-            maxWidth: 600,
-            px: 2,
-            mb: 2,
-          }}
+    <MainPageTemplate
+      header={
+        <BaseButton
+          variant="outlined"
+          startIcon={<SettingsIcon />}
+          onClick={handleOpenModal}
         >
-          <Button
-            variant="outlined"
-            startIcon={<SettingsIcon />}
-            onClick={handleOpenModal}
-          >
-            Preferences
-          </Button>
-        </Box>
-
-        <Dialog
+          Preferences
+        </BaseButton>
+      }
+      searchBar={
+        <SearchBar
+          value={searchTerm}
+          onChange={setSearchTerm}
+          isLoading={isLoading}
+          placeholder="Enter movie or TV show title..."
+        />
+      }
+      preferencesDialog={
+        <PreferencesDialog
           open={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          fullWidth
-          maxWidth="sm"
-        >
-          <DialogTitle>Preferences</DialogTitle>
-          <DialogContent>
-            <Box
-              sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}
-            >
-              <Autocomplete
-                options={regions}
-                loading={regionsLoading}
-                getOptionLabel={(option) => option.name}
-                value={modalRegion}
-                onChange={handleModalRegionChange}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Select Region"
-                    variant="outlined"
-                  />
-                )}
-              />
-              <Autocomplete
-                multiple
-                disabled={!modalRegion}
-                loading={modalLoading}
-                options={modalProviders}
-                getOptionLabel={(option) => option.provider_name}
-                value={modalSelectedProviders}
-                onChange={(_e, newValue) => setModalSelectedProviders(newValue)}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Select Providers"
-                    variant="outlined"
-                    placeholder="Providers"
-                  />
-                )}
-              />
-            </Box>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setIsModalOpen(false)}>Cancel</Button>
-            <Button onClick={handleSaveSettings} variant="contained">
-              Save
-            </Button>
-          </DialogActions>
-        </Dialog>
-
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            width: '100%',
-            maxWidth: 600,
-            px: 2,
-          }}
-        >
-          <Paper
+          regions={regions}
+          regionsLoading={regionsLoading}
+          modalRegion={modalRegion}
+          onRegionChange={handleModalRegionChange}
+          modalProviders={modalProviders}
+          modalSelectedProviders={modalSelectedProviders}
+          onProvidersChange={setModalSelectedProviders}
+          modalLoading={modalLoading}
+          onSave={handleSaveSettings}
+        />
+      }
+      results={
+        searchResults.length > 0 ? (
+          <BaseBox
             sx={{
-              display: 'flex',
-              alignItems: 'center',
               width: '100%',
-              boxShadow: 3,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
             }}
           >
-            <TextField
-              fullWidth
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Enter movie or TV show title..."
-              variant="outlined"
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  '& fieldset': {
-                    border: 'none',
-                  },
-                },
-              }}
-            />
-            {isLoading && <CircularProgress />}
-          </Paper>
-        </Box>
-      </Box>
-
-      <Container maxWidth="lg" sx={{ pt: 4 }}>
-        <Box
-          sx={{
-            py: 4,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          {error && (
-            <Alert
-              severity="error"
-              sx={{ mb: 3, width: '100%', maxWidth: 600 }}
-            >
-              {error.message}
-            </Alert>
-          )}
-
-          {searchResults.length > 0 ? (
-            <Box
-              sx={{
-                width: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-              }}
-            >
-              {searchResults.map((title) => (
-                <TitleCard key={title.id} title={title} />
-              ))}
-            </Box>
-          ) : (
-            debouncedSearch &&
-            !isLoading && (
-              <Box sx={{ textAlign: 'center', py: 4 }}>
-                <Typography variant="h6" color="text.secondary">
-                  No results found for "{searchTerm}"
-                </Typography>
-              </Box>
-            )
-          )}
-        </Box>
-      </Container>
-    </>
+            {searchResults.map((title) => (
+              <TitleItem key={title.id} title={title} />
+            ))}
+          </BaseBox>
+        ) : (
+          debouncedSearch &&
+          !isLoading && (
+            <BaseBox sx={{ textAlign: 'center', py: 4 }}>
+              <BaseTypography variant="h6" color="text.secondary">
+                No results found for "{searchTerm}"
+              </BaseTypography>
+            </BaseBox>
+          )
+        )
+      }
+      error={error}
+    />
   );
 }

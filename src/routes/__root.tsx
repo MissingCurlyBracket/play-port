@@ -9,6 +9,7 @@ import type { QueryClient } from '@tanstack/react-query';
 import type TitleApi from '../api/TitleApi.ts';
 import type RegionApi from '../api/RegionApi.ts';
 import ProviderApi from '../api/ProviderApi.ts';
+import BaseBox from '../components/atoms/BaseBox';
 
 interface RouterContext {
   searchApi: SearchApi;
@@ -21,18 +22,18 @@ interface RouterContext {
 export const Route = createRootRouteWithContext<RouterContext>()({
   component: () => (
     <>
-      <div
-        style={{
+      <BaseBox
+        sx={{
           top: 0,
           left: 0,
-          padding: '16px',
+          p: 2,
           background: 'inherit',
         }}
       >
         <Link to="/" className="[&.active]:font-bold">
           Home
         </Link>
-      </div>
+      </BaseBox>
       <Outlet />
       <TanStackRouterDevtools />
     </>
