@@ -16,14 +16,16 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import RegionApi from './api/RegionApi.ts';
+import ProviderApi from './api/ProviderApi.ts';
 
 const queryClient = new QueryClient();
 const searchApi = new SearchApi();
 const titleApi = new TitleApi();
 const regionApi = new RegionApi();
+const providerApi = new ProviderApi();
 const router = createRouter({
   routeTree,
-  context: { searchApi, titleApi, regionApi, queryClient },
+  context: { searchApi, titleApi, regionApi, queryClient, providerApi },
   history: createHashHistory(),
 });
 
@@ -36,6 +38,9 @@ declare module '@tanstack/react-router' {
   interface RouteContext {
     searchApi: SearchApi;
     queryClient: QueryClient;
+    titleApi: TitleApi;
+    regionApi: RegionApi;
+    providerApi: ProviderApi;
   }
 }
 

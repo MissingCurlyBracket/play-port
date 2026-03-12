@@ -93,6 +93,11 @@ export const handlers = [
     return HttpResponse.json(mockRegions);
   }),
 
+  http.get('*/providers', ({ request }) => {
+    console.log('MSW intercepted: ', request.url);
+    return HttpResponse.json(mockProviders);
+  }),
+
   http.get('*', ({ request }) => {
     console.log('Unhandled request: ', request.url);
     return;

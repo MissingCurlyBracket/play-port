@@ -14,7 +14,7 @@ export const Route = createFileRoute('/')({
 });
 
 function Index() {
-  const { searchApi, regionApi } = Route.useRouteContext();
+  const { searchApi, regionApi, providerApi } = Route.useRouteContext();
   const [error, setError] = useState<Error | null>(null);
 
   const { data: regions, isLoading: regionsLoading } = useQuery({
@@ -31,6 +31,7 @@ function Index() {
   return (
     <MainPage
       searchFn={searchMutation}
+      getProviders={(params) => providerApi.getProviders(params)}
       regions={regions ?? []}
       regionsLoading={regionsLoading}
       error={error}
