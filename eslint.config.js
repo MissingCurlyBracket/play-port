@@ -6,31 +6,32 @@ import tseslint from 'typescript-eslint';
 import { globalIgnores } from 'eslint/config';
 import react from 'eslint-plugin-react';
 
-export default tseslint.config([
+export default tseslint.config(
   globalIgnores(['dist']),
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
   {
     files: ['**/*.{ts,tsx}'],
-    extends: [
-      js.configs.recommended,
-      tseslint.configs.recommended,
-      reactHooks.configs['recommended-latest'],
-      reactRefresh.configs.vite,
-    ],
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
     },
     plugins: {
       '@typescript-eslint': tseslint.plugin,
-      react: react,
+      'react': react,
+      'react-hooks': reactHooks,
+      'react-refresh': reactRefresh,
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
+      ...reactRefresh.configs.vite.rules,
       'react-refresh/only-export-components': [
         'warn',
         { allowConstantExport: true },
       ],
     },
-    ignores: ['**/dist/**', '**/public/**'],
   },
-]);
+  {
+    ignores: ['**/dist/**', '**/public/**'],
+  }
+);
