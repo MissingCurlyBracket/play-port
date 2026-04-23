@@ -82,6 +82,37 @@ interface TmdbAvailableProvidersResponse {
   results: TmdbAvailableProvider[];
 }
 
+interface TmdbTrendingItem {
+  id: number;
+  title?: string;
+  name?: string;
+  original_title?: string;
+  original_name?: string;
+  media_type?: 'movie' | 'tv';
+  backdrop_path?: string;
+  poster_path?: string;
+}
+
+interface TmdbMovieDetails {
+  id: number;
+  title?: string;
+  original_title?: string;
+  overview?: string;
+  release_date?: string;
+  backdrop_path?: string;
+  poster_path?: string;
+}
+
+interface TmdbTvDetails {
+  id: number;
+  name?: string;
+  original_name?: string;
+  overview?: string;
+  first_air_date?: string;
+  backdrop_path?: string;
+  poster_path?: string;
+}
+
 export const search = async (event: APIGatewayProxyEvent) => {
   const apiKey = getTmdbAccessToken();
   const name = event.queryStringParameters?.name;
@@ -486,6 +517,188 @@ export const getAvailableProviders = async (event: APIGatewayProxyEvent) => {
       statusCode: 200,
       headers,
       body: JSON.stringify(results),
+    };
+  } catch {
+    return {
+      statusCode: 500,
+      headers,
+      body: JSON.stringify({ error: 'Internal server error' }),
+    };
+  }
+};
+
+export const getTrending = async () => {
+  const apiKey = getTmdbAccessToken();
+
+  try {
+    const response = await fetch(
+      `https://api.themoviedb.org/3/trending/movie/week`,
+      {
+        method: 'GET',
+        headers: {
+          accept: 'application/json',
+          Authorization: `Bearer ${apiKey}`,
+        },
+      },
+    );
+
+    if (!response.ok) {
+      return {
+        statusCode: response.status,
+        headers,
+        body: JSON.stringify({ error: await response.text() }),
+      };
+    }
+
+    const { results } =
+      (await response.json()) as TmdbSearchResponse<TmdbTrendingItem>;
+
+    const trending = results
+      .filter((item) => !!item.backdrop_path)
+      .map((item) => ({
+        id: item.id,
+        title:
+          item.title ||
+          item.name ||
+          item.original_title ||
+          item.original_name ||
+          '',
+        backdrop_url: `https://image.tmdb.org/t/p/w1280/${item.backdrop_path}`,
+        poster_url: item.poster_path
+          ? `https://image.tmdb.org/t/p/w500/${item.poster_path}`
+          : '',
+      }));
+
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify(trending),
+    };
+  } catch {
+    return {
+      statusCode: 500,
+      headers,
+      body: JSON.stringify({ error: 'Internal server error' }),
+    };
+  }
+};
+
+export const getMovieDetails = async (event: APIGatewayProxyEvent) => {
+  const apiKey = getTmdbAccessToken();
+  const movieId = event.pathParameters?.movieId;
+
+  if (!movieId) {
+    return {
+      statusCode: 400,
+      headers,
+      body: JSON.stringify({ error: 'Missing movieId parameter' }),
+    };
+  }
+
+  try {
+    const response = await fetch(
+      `https://api.themoviedb.org/3/movie/${movieId}`,
+      {
+        method: 'GET',
+        headers: {
+          accept: 'application/json',
+          Authorization: `Bearer ${apiKey}`,
+        },
+      },
+    );
+
+    if (!response.ok) {
+      return {
+        statusCode: response.status,
+        headers,
+        body: JSON.stringify({ error: await response.text() }),
+      };
+    }
+
+    const data = (await response.json()) as TmdbMovieDetails;
+
+    const details = {
+      id: data.id,
+      title: data.title || data.original_title || '',
+      overview: data.overview || '',
+      release_date: data.release_date ? data.release_date.split('-')[0] : '',
+      media_type: 'movie' as const,
+      backdrop_url: data.backdrop_path
+        ? `https://image.tmdb.org/t/p/w1280/${data.backdrop_path}`
+        : '',
+      poster_url: data.poster_path
+        ? `https://image.tmdb.org/t/p/w500/${data.poster_path}`
+        : '',
+    };
+
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify(details),
+    };
+  } catch {
+    return {
+      statusCode: 500,
+      headers,
+      body: JSON.stringify({ error: 'Internal server error' }),
+    };
+  }
+};
+
+export const getTvDetails = async (event: APIGatewayProxyEvent) => {
+  const apiKey = getTmdbAccessToken();
+  const seriesId = event.pathParameters?.seriesId;
+
+  if (!seriesId) {
+    return {
+      statusCode: 400,
+      headers,
+      body: JSON.stringify({ error: 'Missing seriesId parameter' }),
+    };
+  }
+
+  try {
+    const response = await fetch(
+      `https://api.themoviedb.org/3/tv/${seriesId}`,
+      {
+        method: 'GET',
+        headers: {
+          accept: 'application/json',
+          Authorization: `Bearer ${apiKey}`,
+        },
+      },
+    );
+
+    if (!response.ok) {
+      return {
+        statusCode: response.status,
+        headers,
+        body: JSON.stringify({ error: await response.text() }),
+      };
+    }
+
+    const data = (await response.json()) as TmdbTvDetails;
+
+    const details = {
+      id: data.id,
+      title: data.name || data.original_name || '',
+      overview: data.overview || '',
+      release_date: data.first_air_date
+        ? data.first_air_date.split('-')[0]
+        : '',
+      media_type: 'tv' as const,
+      backdrop_url: data.backdrop_path
+        ? `https://image.tmdb.org/t/p/w1280/${data.backdrop_path}`
+        : '',
+      poster_url: data.poster_path
+        ? `https://image.tmdb.org/t/p/w500/${data.poster_path}`
+        : '',
+    };
+
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify(details),
     };
   } catch {
     return {

@@ -5,21 +5,33 @@ import { useState } from 'react';
 
 export const Route = createFileRoute('/')({
   component: Index,
-  loader: async ({ context: { queryClient, regionApi } }) => {
-    await queryClient.prefetchQuery({
-      queryKey: ['regions'],
-      queryFn: async () => await regionApi.getRegions(),
-    });
+  loader: async ({ context: { queryClient, regionApi, trendingApi } }) => {
+    await Promise.all([
+      queryClient.prefetchQuery({
+        queryKey: ['regions'],
+        queryFn: async () => await regionApi.getRegions(),
+      }),
+      queryClient.prefetchQuery({
+        queryKey: ['trending'],
+        queryFn: async () => await trendingApi.getTrending(),
+      }),
+    ]);
   },
 });
 
 function Index() {
-  const { searchApi, regionApi, providerApi } = Route.useRouteContext();
+  const { searchApi, regionApi, providerApi, trendingApi } =
+    Route.useRouteContext();
   const [error, setError] = useState<Error | null>(null);
 
   const { data: regions, isLoading: regionsLoading } = useQuery({
     queryKey: ['regions'],
     queryFn: async () => await regionApi.getRegions(),
+  });
+
+  const { data: trending } = useQuery({
+    queryKey: ['trending'],
+    queryFn: async () => await trendingApi.getTrending(),
   });
 
   const searchMutation = useMutation({
@@ -28,6 +40,8 @@ function Index() {
     onError: (error: Error | null) => setError(error),
   }).mutateAsync;
 
+  const backdropUrl = trending?.[0]?.backdrop_url;
+
   return (
     <MainPage
       searchFn={searchMutation}
@@ -35,6 +49,7 @@ function Index() {
       regions={regions ?? []}
       regionsLoading={regionsLoading}
       error={error}
+      backdropUrl={backdropUrl}
     />
   );
 }

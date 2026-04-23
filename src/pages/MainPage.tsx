@@ -18,6 +18,7 @@ interface MainPageProps {
   regions: Region[];
   regionsLoading?: boolean;
   error: Error | null;
+  backdropUrl?: string;
 }
 
 export default function MainPage({
@@ -26,6 +27,7 @@ export default function MainPage({
   regions,
   regionsLoading,
   error,
+  backdropUrl,
 }: Readonly<MainPageProps>): ReactElement {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
@@ -148,11 +150,18 @@ export default function MainPage({
 
   return (
     <MainPageTemplate
+      backdropUrl={backdropUrl}
       header={
         <BaseButton
           variant="outlined"
+          color="primary"
           startIcon={<SettingsIcon />}
           onClick={handleOpenModal}
+          sx={{
+            backgroundColor: 'rgba(26, 20, 48, 0.6)',
+            backdropFilter: 'blur(8px)',
+            borderColor: 'rgba(169, 148, 222, 0.4)',
+          }}
         >
           Preferences
         </BaseButton>
@@ -162,7 +171,7 @@ export default function MainPage({
           value={searchTerm}
           onChange={setSearchTerm}
           isLoading={isLoading}
-          placeholder="Enter movie or TV show title..."
+          placeholder="Search for a movie or TV show..."
         />
       }
       preferencesDialog={
@@ -185,9 +194,11 @@ export default function MainPage({
           <BaseBox
             sx={{
               width: '100%',
+              maxWidth: 820,
               display: 'flex',
               flexDirection: 'column',
-              alignItems: 'center',
+              alignItems: 'stretch',
+              gap: 1.5,
             }}
           >
             {searchResults.map((title) => (

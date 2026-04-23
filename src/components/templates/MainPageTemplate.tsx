@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react';
 import BaseBox from '../atoms/BaseBox';
 import BaseTypography from '../atoms/BaseTypography';
-import BaseContainer from '../atoms/BaseContainer';
 import BaseAlert from '../atoms/BaseAlert';
+import BackdropHero from '../molecules/BackdropHero';
 
 interface MainPageTemplateProps {
   header: ReactNode;
@@ -10,6 +10,7 @@ interface MainPageTemplateProps {
   results: ReactNode;
   preferencesDialog: ReactNode;
   error?: Error | null;
+  backdropUrl?: string;
 }
 
 export default function MainPageTemplate({
@@ -18,35 +19,22 @@ export default function MainPageTemplate({
   results,
   preferencesDialog,
   error,
+  backdropUrl,
 }: Readonly<MainPageTemplateProps>) {
   return (
-    <>
-      <BaseBox
-        sx={{
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          top: 0,
-          left: 0,
-          zIndex: 10,
-          background: 'inherit',
-          pt: 3,
-          pb: 2,
-        }}
+    <BaseBox sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
+      <BackdropHero
+        backdropUrl={backdropUrl}
+        gradientDirection="to-bottom"
+        blur={16}
+        height="100vh"
       >
-        <BaseTypography variant="h3" component="h1" align="center" gutterBottom>
-          Search Movies & TV Shows
-        </BaseTypography>
         <BaseBox
           sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            width: '100%',
-            maxWidth: 600,
-            px: 2,
-            mb: 2,
+            position: 'absolute',
+            top: 16,
+            right: 16,
+            zIndex: 2,
           }}
         >
           {header}
@@ -55,39 +43,84 @@ export default function MainPageTemplate({
         <BaseBox
           sx={{
             display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            width: '100%',
-            maxWidth: 600,
-            px: 2,
-          }}
-        >
-          {searchBar}
-        </BaseBox>
-      </BaseBox>
-
-      {preferencesDialog}
-
-      <BaseContainer maxWidth="lg" sx={{ pt: 4 }}>
-        <BaseBox
-          sx={{
-            py: 4,
-            display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
+            px: 2,
+            pt: { xs: 12, md: 14 },
+            pb: 6,
+            textAlign: 'center',
           }}
         >
-          {error && (
-            <BaseAlert
-              severity="error"
-              sx={{ mb: 3, width: '100%', maxWidth: 600 }}
-            >
-              {error.message}
-            </BaseAlert>
-          )}
-          {results}
+          <BaseTypography
+            variant="overline"
+            sx={{
+              color: 'primary.light',
+              letterSpacing: '0.25em',
+              mb: 1,
+              fontSize: '0.85rem',
+            }}
+          >
+            play-port
+          </BaseTypography>
+          <BaseTypography
+            variant="h2"
+            component="h1"
+            sx={{
+              fontWeight: 800,
+              mb: 1,
+              textShadow: '0 4px 24px rgba(0,0,0,0.8)',
+              fontSize: { xs: '2.25rem', md: '3.5rem' },
+            }}
+          >
+            Where to watch?
+          </BaseTypography>
+          <BaseTypography
+            variant="h6"
+            sx={{
+              color: 'text.secondary',
+              fontWeight: 400,
+              maxWidth: 560,
+              mb: 3,
+              textShadow: '0 2px 12px rgba(0,0,0,0.8)',
+            }}
+          >
+            Find where to stream any movie or TV show, in your region, on your
+            services.
+          </BaseTypography>
+          <BaseBox
+            sx={{
+              width: '100%',
+              maxWidth: 640,
+            }}
+          >
+            {searchBar}
+          </BaseBox>
+
+          <BaseBox
+            sx={{
+              width: '100%',
+              maxWidth: 820,
+              mt: 3,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              textAlign: 'left',
+            }}
+          >
+            {error && (
+              <BaseAlert
+                severity="error"
+                sx={{ mb: 2, width: '100%' }}
+              >
+                {error.message}
+              </BaseAlert>
+            )}
+            {results}
+          </BaseBox>
         </BaseBox>
-      </BaseContainer>
-    </>
+      </BackdropHero>
+
+      {preferencesDialog}
+    </BaseBox>
   );
 }

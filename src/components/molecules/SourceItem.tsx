@@ -22,13 +22,22 @@ export default function SourceItem({
 }: Readonly<SourceItemProps>): ReactElement {
   return (
     <BaseCard
-      sx={{ width: '50vw', mb: 2 }}
+      sx={{
+        width: '100%',
+        transition:
+          'transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease',
+        '&:hover': {
+          borderColor: 'primary.main',
+          transform: url ? 'translateY(-2px)' : 'none',
+          boxShadow: url ? '0 10px 28px rgba(0,0,0,0.5)' : undefined,
+        },
+      }}
       onClick={url ? () => window.open(url, '_blank') : undefined}
       actionAreaProps={{
         disabled: !url,
         sx: {
           '&:hover': {
-            backgroundColor: url ? 'action.selectedHover' : 'inherit',
+            backgroundColor: 'transparent',
             cursor: url ? 'pointer' : 'default',
           },
         },
@@ -37,65 +46,74 @@ export default function SourceItem({
       <BaseBox
         sx={{
           display: 'flex',
-          justifyContent: 'space-between',
+          flexDirection: 'column',
           alignItems: 'center',
-          width: '100%',
+          justifyContent: 'center',
+          gap: 1.5,
+          py: 1,
         }}
       >
-        <BaseBox
+        {logo ? (
+          <BaseImage
+            src={logo}
+            alt={name}
+            sx={{
+              width: 64,
+              height: 64,
+              objectFit: 'cover',
+              borderRadius: 2,
+              boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
+            }}
+          />
+        ) : (
+          <BaseBox
+            sx={{
+              width: 64,
+              height: 64,
+              borderRadius: 2,
+              backgroundColor: 'rgba(169, 148, 222, 0.08)',
+            }}
+          />
+        )}
+        <BaseTypography
+          variant="subtitle2"
+          component="div"
           sx={{
-            display: 'flex',
-            alignItems: 'center',
-            flex: 1,
-            mr: 2,
+            fontWeight: 600,
+            textAlign: 'center',
             overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+            width: '100%',
           }}
         >
-          {logo && (
-            <BaseImage
-              src={logo}
-              alt={name}
-              sx={{
-                width: 40,
-                height: 40,
-                objectFit: 'contain',
-                mr: 2,
-                borderRadius: 1,
-              }}
-            />
-          )}
-          <BaseTypography
-            variant="h6"
-            component="div"
+          {name}
+        </BaseTypography>
+        {(format || nrOfSeasons) && (
+          <BaseBox
             sx={{
-              fontWeight: 600,
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
+              display: 'flex',
+              gap: 1,
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              justifyContent: 'center',
             }}
           >
-            {name}
-          </BaseTypography>
-        </BaseBox>
-        <BaseBox sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-          {format && (
-            <BaseChip
-              label={format}
-              size="small"
-              variant="outlined"
-              color="primary"
-            />
-          )}
-          {nrOfSeasons && (
-            <BaseTypography
-              variant="body2"
-              color="text.secondary"
-              sx={{ minWidth: 'fit-content' }}
-            >
-              {nrOfSeasons} Season(s)
-            </BaseTypography>
-          )}
-        </BaseBox>
+            {format && (
+              <BaseChip
+                label={format}
+                size="small"
+                variant="outlined"
+                color="primary"
+              />
+            )}
+            {nrOfSeasons && (
+              <BaseTypography variant="caption" color="text.secondary">
+                {nrOfSeasons} Season{nrOfSeasons === 1 ? '' : 's'}
+              </BaseTypography>
+            )}
+          </BaseBox>
+        )}
       </BaseBox>
     </BaseCard>
   );

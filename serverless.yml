@@ -38,6 +38,24 @@ functions:
       - httpApi:
           path: /providers
           method: get
+  getTrending:
+    handler: functions/handler.getTrending
+    events:
+      - httpApi:
+          path: /trending
+          method: get
+  getMovieDetails:
+    handler: functions/handler.getMovieDetails
+    events:
+      - httpApi:
+          path: /movie/{movieId}
+          method: get
+  getTvDetails:
+    handler: functions/handler.getTvDetails
+    events:
+      - httpApi:
+          path: /tv/{seriesId}
+          method: get
 
 plugins:
   - serverless-offline

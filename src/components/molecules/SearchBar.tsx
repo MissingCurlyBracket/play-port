@@ -21,7 +21,16 @@ export default function SearchBar({
         display: 'flex',
         alignItems: 'center',
         width: '100%',
-        boxShadow: 3,
+        backgroundColor: 'rgba(26, 20, 48, 0.75)',
+        backdropFilter: 'blur(12px)',
+        border: '1px solid rgba(169, 148, 222, 0.25)',
+        borderRadius: 3,
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.45)',
+        transition: 'border-color 160ms ease, box-shadow 160ms ease',
+        '&:focus-within': {
+          borderColor: 'primary.main',
+          boxShadow: '0 8px 36px rgba(140, 114, 208, 0.3)',
+        },
       }}
     >
       <BaseTextField
@@ -32,9 +41,13 @@ export default function SearchBar({
         variant="outlined"
         sx={{
           '& .MuiOutlinedInput-root': {
+            fontSize: '1.05rem',
             '& fieldset': {
               border: 'none',
             },
+          },
+          '& input': {
+            py: 1.5,
           },
         }}
       />
