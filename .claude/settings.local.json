@@ -5,7 +5,8 @@
       "Bash(git commit -m ' *)",
       "Bash(git push *)",
       "Bash(curl *)",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "WebFetch(domain:developer.themoviedb.org)"
     ]
   },
   "spinnerTipsEnabled": false

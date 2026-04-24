@@ -20,6 +20,7 @@ import '@fontsource/roboto/700.css';
 import RegionApi from './api/RegionApi.ts';
 import ProviderApi from './api/ProviderApi.ts';
 import TrendingApi from './api/TrendingApi.ts';
+import PopularApi from './api/PopularApi.ts';
 import theme from './theme.ts';
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const titleApi = new TitleApi();
 const regionApi = new RegionApi();
 const providerApi = new ProviderApi();
 const trendingApi = new TrendingApi();
+const popularApi = new PopularApi();
 const router = createRouter({
   routeTree,
   context: {
@@ -37,6 +39,7 @@ const router = createRouter({
     queryClient,
     providerApi,
     trendingApi,
+    popularApi,
   },
   history: createHashHistory(),
 });
@@ -54,6 +57,7 @@ declare module '@tanstack/react-router' {
     regionApi: RegionApi;
     providerApi: ProviderApi;
     trendingApi: TrendingApi;
+    popularApi: PopularApi;
   }
 }
 

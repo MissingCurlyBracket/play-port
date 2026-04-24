@@ -708,3 +708,127 @@ export const getTvDetails = async (event: APIGatewayProxyEvent) => {
     };
   }
 };
+
+interface PopularTitle {
+  id: number;
+  title: string;
+  media_type: 'movie' | 'tv';
+  poster_url: string;
+  backdrop_url: string;
+}
+
+const isTitleAvailable = (
+  data: TmdbProvidersResponse,
+  region: string,
+  providerIds: Set<number>,
+): boolean => {
+  const regionData = data.results?.[region];
+  if (!regionData) return false;
+  const buckets = [regionData.flatrate, regionData.rent, regionData.buy];
+  return buckets.some((bucket) =>
+    bucket?.some((provider) => providerIds.has(provider.provider_id)),
+  );
+};
+
+const fetchPopularAndFilter = async (
+  type: 'movie' | 'tv',
+  apiKey: string | undefined,
+  region?: string,
+  providersParam?: string,
+): Promise<PopularTitle[]> => {
+  const popularResponse = await fetch(
+    `https://api.themoviedb.org/3/${type}/popular`,
+    {
+      method: 'GET',
+      headers: {
+        accept: 'application/json',
+        Authorization: `Bearer ${apiKey}`,
+      },
+    },
+  );
+
+  if (!popularResponse.ok) {
+    throw new Error(await popularResponse.text());
+  }
+
+  const { results } =
+    (await popularResponse.json()) as TmdbSearchResponse<TmdbTrendingItem>;
+
+  const mapped: PopularTitle[] = results.map((item) => ({
+    id: item.id,
+    title:
+      item.title ||
+      item.name ||
+      item.original_title ||
+      item.original_name ||
+      '',
+    media_type: type,
+    poster_url: item.poster_path
+      ? `https://image.tmdb.org/t/p/w500/${item.poster_path}`
+      : '',
+    backdrop_url: item.backdrop_path
+      ? `https://image.tmdb.org/t/p/w1280/${item.backdrop_path}`
+      : '',
+  }));
+
+  if (!region || !providersParam) {
+    return mapped.slice(0, 10);
+  }
+
+  const providerIds = new Set(providersParam.split(',').map(Number));
+
+  const availabilityChecks = await Promise.all(
+    mapped.map(async (title) => {
+      const response = await fetch(
+        `https://api.themoviedb.org/3/${type}/${title.id}/watch/providers`,
+        {
+          method: 'GET',
+          headers: {
+            accept: 'application/json',
+            Authorization: `Bearer ${apiKey}`,
+          },
+        },
+      );
+      if (!response.ok) return false;
+      const data = (await response.json()) as TmdbProvidersResponse;
+      return isTitleAvailable(data, region, providerIds);
+    }),
+  );
+
+  return mapped.filter((_, index) => availabilityChecks[index]);
+};
+
+const respondPopular = async (
+  type: 'movie' | 'tv',
+  event: APIGatewayProxyEvent,
+) => {
+  const apiKey = getTmdbAccessToken();
+  const region = event.queryStringParameters?.region;
+  const providersParam = event.queryStringParameters?.providers;
+
+  try {
+    const titles = await fetchPopularAndFilter(
+      type,
+      apiKey,
+      region,
+      providersParam,
+    );
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify(titles),
+    };
+  } catch {
+    return {
+      statusCode: 500,
+      headers,
+      body: JSON.stringify({ error: 'Internal server error' }),
+    };
+  }
+};
+
+export const getPopularMovies = async (event: APIGatewayProxyEvent) =>
+  respondPopular('movie', event);
+
+export const getPopularTvShows = async (event: APIGatewayProxyEvent) =>
+  respondPopular('tv', event);

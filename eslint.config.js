@@ -27,7 +27,7 @@ export default tseslint.config(
       ...reactRefresh.configs.vite.rules,
       'react-refresh/only-export-components': [
         'warn',
-        { allowConstantExport: true },
+        { allowConstantExport: true, allowExportNames: ['Route'] },
       ],
     },
   },

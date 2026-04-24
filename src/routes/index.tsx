@@ -19,8 +19,8 @@ export const Route = createFileRoute('/')({
   },
 });
 
-function Index() {
-  const { searchApi, regionApi, providerApi, trendingApi } =
+export function Index() {
+  const { searchApi, regionApi, providerApi, trendingApi, popularApi } =
     Route.useRouteContext();
   const [error, setError] = useState<Error | null>(null);
 
@@ -46,6 +46,7 @@ function Index() {
     <MainPage
       searchFn={searchMutation}
       getProviders={(params) => providerApi.getProviders(params)}
+      getPopular={(params) => popularApi.getPopular(params)}
       regions={regions ?? []}
       regionsLoading={regionsLoading}
       error={error}

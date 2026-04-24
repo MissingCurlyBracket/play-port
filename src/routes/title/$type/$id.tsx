@@ -1,18 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router';
 import TitlePage from '../../../pages/TitlePage.tsx';
 import { useQuery } from '@tanstack/react-query';
-
-const getRegionFromCookie = () => {
-  if (typeof document === 'undefined') return undefined;
-  const match = document.cookie.match(new RegExp('(^| )region=([^;]+)'));
-  return match ? match[2] : undefined;
-};
-
-const getProvidersFromCookie = () => {
-  if (typeof document === 'undefined') return undefined;
-  const match = document.cookie.match(new RegExp('(^| )providers=([^;]+)'));
-  return match ? match[2] : undefined;
-};
+import {
+  getProvidersFromCookie,
+  getRegionFromCookie,
+} from '../../../utils/cookies.ts';
 
 export const Route = createFileRoute('/title/$type/$id')({
   component: TitleComponent,
@@ -45,7 +37,7 @@ export const Route = createFileRoute('/title/$type/$id')({
   },
 });
 
-function TitleComponent() {
+export function TitleComponent() {
   const { id, type } = Route.useParams();
   const { titleApi } = Route.useRouteContext();
   const region = getRegionFromCookie();

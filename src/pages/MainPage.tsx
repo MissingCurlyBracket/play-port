@@ -1,7 +1,9 @@
 import { type ReactElement, useEffect, useState } from 'react';
+import { useNavigate } from '@tanstack/react-router';
 import type { SearchResult } from '../api/SearchApi.ts';
 import type { Provider } from '../api/TitleApi.ts';
 import type { Region } from '../api/RegionApi.ts';
+import type { PopularTitle } from '../api/PopularApi.ts';
 import { useDebounce } from 'use-debounce';
 import SettingsIcon from '@mui/icons-material/Settings';
 import BaseButton from '../components/atoms/BaseButton.tsx';
@@ -9,12 +11,22 @@ import BaseBox from '../components/atoms/BaseBox.tsx';
 import BaseTypography from '../components/atoms/BaseTypography.tsx';
 import TitleItem from '../components/molecules/TitleItem.tsx';
 import SearchBar from '../components/molecules/SearchBar.tsx';
+import SuggestionButtons from '../components/molecules/SuggestionButtons.tsx';
 import PreferencesDialog from '../components/organisms/PreferencesDialog.tsx';
 import MainPageTemplate from '../components/templates/MainPageTemplate.tsx';
+import {
+  getProvidersFromCookie,
+  getRegionFromCookie,
+} from '../utils/cookies.ts';
 
 interface MainPageProps {
   searchFn: (title: string) => Promise<SearchResult[]>;
   getProviders: (params: { region: string }) => Promise<Provider[]>;
+  getPopular: (params: {
+    type: 'movie' | 'tv';
+    region?: string;
+    providers?: string;
+  }) => Promise<PopularTitle[]>;
   regions: Region[];
   regionsLoading?: boolean;
   error: Error | null;
@@ -24,17 +36,29 @@ interface MainPageProps {
 export default function MainPage({
   searchFn,
   getProviders,
+  getPopular,
   regions,
   regionsLoading,
   error,
   backdropUrl,
 }: Readonly<MainPageProps>): ReactElement {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [debouncedSearch] = useDebounce(searchTerm, 400);
   const [selectedRegion, setSelectedRegion] = useState<Region | null>(null);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [suggestLoading, setSuggestLoading] = useState<'movie' | 'tv' | null>(
+    null,
+  );
+  const [suggestError, setSuggestError] = useState<Error | null>(null);
+  const [hasSelectedProviders, setHasSelectedProviders] = useState<boolean>(
+    () => {
+      const p = getProvidersFromCookie();
+      return !!p && p.length > 0;
+    },
+  );
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalRegion, setModalRegion] = useState<Region | null>(null);
@@ -121,11 +145,42 @@ export default function MainPage({
     if (modalSelectedProviders.length > 0) {
       const ids = modalSelectedProviders.map((p) => p.provider_id).join(',');
       document.cookie = `providers=${ids}; path=/; max-age=31536000`;
+      setHasSelectedProviders(true);
     } else {
       document.cookie = `providers=; path=/; max-age=0`;
+      setHasSelectedProviders(false);
     }
 
     setIsModalOpen(false);
+  };
+
+  const handleSuggest = async (type: 'movie' | 'tv') => {
+    setSuggestError(null);
+    setSuggestLoading(type);
+    try {
+      const region = getRegionFromCookie();
+      const providers = getProvidersFromCookie();
+      const results = await getPopular({ type, region, providers });
+      const top10 = results.slice(0, 10);
+      const pool = top10.length > 0 ? top10 : results;
+      if (pool.length === 0) {
+        setSuggestError(
+          new Error(
+            `No popular ${type === 'movie' ? 'movies' : 'TV shows'} available on your services right now. Try different providers.`,
+          ),
+        );
+        return;
+      }
+      const picked = pool[Math.floor(Math.random() * pool.length)];
+      navigate({
+        to: '/title/$type/$id',
+        params: { type, id: String(picked.id) },
+      });
+    } catch (e) {
+      setSuggestError(e as Error);
+    } finally {
+      setSuggestLoading(null);
+    }
   };
 
   useEffect(() => {
@@ -161,10 +216,26 @@ export default function MainPage({
             backgroundColor: 'rgba(26, 20, 48, 0.6)',
             backdropFilter: 'blur(8px)',
             borderColor: 'rgba(169, 148, 222, 0.4)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.45)',
+            transition:
+              'border-color 160ms ease, box-shadow 160ms ease, color 160ms ease',
+            '&:hover': {
+              backgroundColor: 'rgba(26, 20, 48, 0.6)',
+              borderColor: 'primary.main',
+              boxShadow: '0 8px 36px rgba(140, 114, 208, 0.3)',
+              color: 'primary.light',
+            },
           }}
         >
           Preferences
         </BaseButton>
+      }
+      suggestionButtons={
+        <SuggestionButtons
+          onSuggest={handleSuggest}
+          loadingType={suggestLoading}
+          hasPreferences={!!selectedRegion && hasSelectedProviders}
+        />
       }
       searchBar={
         <SearchBar
@@ -216,7 +287,7 @@ export default function MainPage({
           )
         )
       }
-      error={error}
+      error={suggestError ?? error}
     />
   );
 }

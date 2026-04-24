@@ -56,6 +56,18 @@ functions:
       - httpApi:
           path: /tv/{seriesId}
           method: get
+  getPopularMovies:
+    handler: functions/handler.getPopularMovies
+    events:
+      - httpApi:
+          path: /popular/movie
+          method: get
+  getPopularTvShows:
+    handler: functions/handler.getPopularTvShows
+    events:
+      - httpApi:
+          path: /popular/tv
+          method: get
 
 plugins:
   - serverless-offline

@@ -6,6 +6,7 @@ import BackdropHero from '../molecules/BackdropHero';
 
 interface MainPageTemplateProps {
   header: ReactNode;
+  suggestionButtons?: ReactNode;
   searchBar: ReactNode;
   results: ReactNode;
   preferencesDialog: ReactNode;
@@ -15,6 +16,7 @@ interface MainPageTemplateProps {
 
 export default function MainPageTemplate({
   header,
+  suggestionButtons,
   searchBar,
   results,
   preferencesDialog,
@@ -87,6 +89,11 @@ export default function MainPageTemplate({
             Find where to stream any movie or TV show, in your region, on your
             services.
           </BaseTypography>
+          {suggestionButtons && (
+            <BaseBox sx={{ width: '100%', maxWidth: 640, mb: 2 }}>
+              {suggestionButtons}
+            </BaseBox>
+          )}
           <BaseBox
             sx={{
               width: '100%',

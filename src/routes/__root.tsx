@@ -13,6 +13,7 @@ import type TitleApi from '../api/TitleApi.ts';
 import type RegionApi from '../api/RegionApi.ts';
 import type ProviderApi from '../api/ProviderApi.ts';
 import type TrendingApi from '../api/TrendingApi.ts';
+import type PopularApi from '../api/PopularApi.ts';
 import BaseBox from '../components/atoms/BaseBox';
 
 interface RouterContext {
@@ -21,10 +22,11 @@ interface RouterContext {
   regionApi: RegionApi;
   providerApi: ProviderApi;
   trendingApi: TrendingApi;
+  popularApi: PopularApi;
   queryClient: QueryClient;
 }
 
-function RootLayout() {
+export function RootLayout() {
   const router = useRouter();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 

@@ -2,6 +2,7 @@ import { http, HttpResponse } from 'msw';
 import type { SearchResult } from '../api/SearchApi.ts';
 import type { Provider, TitleDetails } from '../api/TitleApi.ts';
 import type { TrendingMovie } from '../api/TrendingApi.ts';
+import type { PopularTitle } from '../api/PopularApi.ts';
 
 const mockSearchResults: SearchResult[] = [
   {
@@ -96,6 +97,19 @@ export const handlers = [
   http.get('*/trending', ({ request }) => {
     console.log('MSW intercepted: ', request.url);
     return HttpResponse.json(mockTrending);
+  }),
+
+  http.get('*/popular/:type', ({ request, params }) => {
+    console.log('MSW intercepted: ', request.url);
+    const type = params.type as 'movie' | 'tv';
+    const mockPopular: PopularTitle[] = Array.from({ length: 10 }, (_, i) => ({
+      id: 120982 + i,
+      title: `Mock Popular ${type === 'movie' ? 'Movie' : 'Show'} ${i + 1}`,
+      media_type: type,
+      poster_url: `https://placehold.co/500x750/1a1430/c9beec?text=Popular+${i + 1}`,
+      backdrop_url: `https://placehold.co/1280x720/0f0a1f/8c72d0?text=Popular+${i + 1}`,
+    }));
+    return HttpResponse.json(mockPopular);
   }),
 
   http.get('*/movie/:id/providers', ({ request }) => {
