@@ -1,69 +1,93 @@
-# React + TypeScript + Vite
+# Play Port
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A streaming-service locator for movies and TV shows. Search a title and play-port
+tells you where you can watch it in your region, using data
+from [TMDB](https://www.themoviedb.org/).
 
-Currently, two official plugins are available:
+Live: https://missingcurlybracket.github.io/play-port/
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
+- Search the TMDB catalogue for movies and TV shows
+- See per-title streaming providers (flatrate, rent, buy)
+- Filter results by region
+- Remember the user's region and preferred providers in browser cookies
+- Trending and popular suggestions on the home screen
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Architecture
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### Frontend (`src/`)
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+- React 19 + TypeScript + Vite
+- [TanStack Router](https://tanstack.com/router) for file-based routing (
+  `src/routes/`; `routeTree.gen.ts` is auto-generated — do not edit)
+- [TanStack Query](https://tanstack.com/query) for server state
+- Material UI + Tailwind CSS for styling
+- Atomic component layout under `src/components/`: `atoms/`, `molecules/`,
+  `organisms/`, `templates/`
+- Class-based API clients in `src/api/` (`SearchApi`, `TitleApi`, `RegionApi`,
+  `ProviderApi`) injected through router context
+- [MSW](https://mswjs.io/) handlers in `src/mocks/` mock the backend in dev mode
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Backend (`functions/`)
+
+- AWS Lambda functions defined in `serverless.yml`, bundled with esbuild
+- `functions/handler.ts` exports every handler — all of them proxy TMDB API v3
+- Endpoints: `/search`, `/movie/{movieId}/providers`, `/tv/{seriesId}/providers`,
+  `/regions`, `/providers`
+- Node.js 24.x, deployed to `eu-central-1`
+
+## Getting started
+
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+For the backend locally:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npx serverless offline
 ```
+
+### Environment variables
+
+| Variable                 | Scope             | Purpose                       |
+|--------------------------|-------------------|-------------------------------|
+| `VITE_API_BASE_URL`      | frontend (`.env`) | Backend API URL the SPA calls |
+| `TMDB_READ_ACCESS_TOKEN` | backend           | TMDB v3 bearer token          |
+
+## Scripts
+
+| Task             | Command                               |
+|------------------|---------------------------------------|
+| Dev server       | `npm run dev`                         |
+| Build            | `npm run build`                       |
+| Lint             | `npm run lint`                        |
+| Type check       | `npm run typecheck`                   |
+| Run tests        | `npm run test`                        |
+| Tests with UI    | `npm run test:ui`                     |
+| Single test file | `npx vitest run path/to/file.test.ts` |
+| Local backend    | `npx serverless offline`              |
+| Deploy frontend  | `npm run deploy`                      |
+
+## Project layout
+
+```
+src/          React SPA (routes, components, api clients, mocks)
+functions/    AWS Lambda handlers (TMDB proxy)
+public/       Static assets + MSW service worker
+serverless.yml  Serverless Framework config for the backend
+```
+
+## Deployment
+
+- **Frontend** → GitHub Pages via `npm run deploy` (publishes `dist/` with
+  `gh-pages`).
+- **Backend** → `serverless deploy` to AWS (`eu-central-1`).
+
+## Code style
+
+Prettier (single quotes, semicolons, trailing commas, 2-space indent, 80-char width)
+and ESLint flat config with TypeScript, React, React Hooks, and Prettier plugins.
+Tests run on Vitest with Chai assertions in a jsdom environment.
