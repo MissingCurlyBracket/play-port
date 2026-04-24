@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import MainPage from '../pages/MainPage.tsx';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 export const Route = createFileRoute('/')({
   component: Index,
@@ -23,6 +23,7 @@ export function Index() {
   const { searchApi, regionApi, providerApi, trendingApi, popularApi } =
     Route.useRouteContext();
   const [error, setError] = useState<Error | null>(null);
+  const [backdropSeed] = useState(() => Math.random());
 
   const { data: regions, isLoading: regionsLoading } = useQuery({
     queryKey: ['regions'],
@@ -40,7 +41,11 @@ export function Index() {
     onError: (error: Error | null) => setError(error),
   }).mutateAsync;
 
-  const backdropUrl = trending?.[0]?.backdrop_url;
+  const backdropUrl = useMemo(() => {
+    if (!trending || trending.length === 0) return undefined;
+    const index = Math.floor(backdropSeed * trending.length);
+    return trending[index].backdrop_url;
+  }, [trending, backdropSeed]);
 
   return (
     <MainPage

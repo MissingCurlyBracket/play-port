@@ -58,16 +58,12 @@ const mockRegions = [
   { code: 'RO', name: 'Romania' },
 ];
 
-const mockTrending: TrendingMovie[] = [
-  {
-    id: 1,
-    title: 'Featured Movie',
-    backdrop_url:
-      'https://placehold.co/1280x720/0f0a1f/8c72d0?text=Featured+Backdrop',
-    poster_url:
-      'https://placehold.co/500x750/1a1430/c9beec?text=Featured',
-  },
-];
+const mockTrending: TrendingMovie[] = Array.from({ length: 50 }, (_, i) => ({
+  id: i + 1,
+  title: `Featured Movie ${i + 1}`,
+  backdrop_url: `https://placehold.co/1280x720/0f0a1f/8c72d0?text=Backdrop+${i + 1}`,
+  poster_url: `https://placehold.co/500x750/1a1430/c9beec?text=Featured+${i + 1}`,
+}));
 
 const mockTitleDetails: TitleDetails = {
   id: 120982,

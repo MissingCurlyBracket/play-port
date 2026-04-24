@@ -527,34 +527,46 @@ export const getAvailableProviders = async (event: APIGatewayProxyEvent) => {
   }
 };
 
+const TRENDING_TARGET_COUNT = 50;
+const TRENDING_PAGE_SIZE = 20;
+
 export const getTrending = async () => {
   const apiKey = getTmdbAccessToken();
 
   try {
-    const response = await fetch(
-      `https://api.themoviedb.org/3/trending/movie/week`,
-      {
-        method: 'GET',
-        headers: {
-          accept: 'application/json',
-          Authorization: `Bearer ${apiKey}`,
-        },
-      },
+    const pageCount = Math.ceil(TRENDING_TARGET_COUNT / TRENDING_PAGE_SIZE);
+    const pages = await Promise.all(
+      Array.from({ length: pageCount }, (_, i) =>
+        fetch(
+          `https://api.themoviedb.org/3/trending/movie/week?page=${i + 1}`,
+          {
+            method: 'GET',
+            headers: {
+              accept: 'application/json',
+              Authorization: `Bearer ${apiKey}`,
+            },
+          },
+        ),
+      ),
     );
 
-    if (!response.ok) {
+    const firstFailed = pages.find((r) => !r.ok);
+    if (firstFailed) {
       return {
-        statusCode: response.status,
+        statusCode: firstFailed.status,
         headers,
-        body: JSON.stringify({ error: await response.text() }),
+        body: JSON.stringify({ error: await firstFailed.text() }),
       };
     }
 
-    const { results } =
-      (await response.json()) as TmdbSearchResponse<TmdbTrendingItem>;
+    const bodies = (await Promise.all(pages.map((r) => r.json()))) as Array<
+      TmdbSearchResponse<TmdbTrendingItem>
+    >;
 
-    const trending = results
+    const trending = bodies
+      .flatMap((b) => b.results)
       .filter((item) => !!item.backdrop_path)
+      .slice(0, TRENDING_TARGET_COUNT)
       .map((item) => ({
         id: item.id,
         title:
