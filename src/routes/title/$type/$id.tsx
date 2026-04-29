@@ -14,26 +14,24 @@ export const Route = createFileRoute('/title/$type/$id')({
   }) => {
     const region = getRegionFromCookie();
     const providers = getProvidersFromCookie();
-    await Promise.all([
-      queryClient.prefetchQuery({
-        queryKey: ['title', type, id],
-        queryFn: async () =>
-          await titleApi.getTitle({
-            id: Number(id),
-            type: type as 'movie' | 'tv',
-          }),
-      }),
-      queryClient.prefetchQuery({
-        queryKey: ['providers', type, id, region, providers],
-        queryFn: async () =>
-          await titleApi.getProviders({
-            id: Number(id),
-            type: type as 'movie' | 'tv',
-            region,
-            providers,
-          }),
-      }),
-    ]);
+    await queryClient.prefetchQuery({
+      queryKey: ['title', type, id],
+      queryFn: async () =>
+        await titleApi.getTitle({
+          id: Number(id),
+          type: type as 'movie' | 'tv',
+        }),
+    });
+    queryClient.prefetchQuery({
+      queryKey: ['providers', type, id, region, providers],
+      queryFn: async () =>
+        await titleApi.getProviders({
+          id: Number(id),
+          type: type as 'movie' | 'tv',
+          region,
+          providers,
+        }),
+    });
   },
 });
 
@@ -52,7 +50,7 @@ export function TitleComponent() {
       }),
   });
 
-  const { data: providersList } = useQuery({
+  const { data: providersList, isLoading: providersLoading } = useQuery({
     queryKey: ['providers', type, id, region, providers],
     queryFn: async () =>
       await titleApi.getProviders({
@@ -63,5 +61,11 @@ export function TitleComponent() {
       }),
   });
 
-  return <TitlePage title={titleDetails} providers={providersList} />;
+  return (
+    <TitlePage
+      title={titleDetails}
+      providers={providersList}
+      providersLoading={providersLoading}
+    />
+  );
 }

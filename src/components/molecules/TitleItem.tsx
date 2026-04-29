@@ -10,10 +10,12 @@ import BaseChip from '../atoms/BaseChip';
 
 interface TitleItemProps {
   title: SearchResult;
+  interactive?: boolean;
 }
 
 export default function TitleItem({
   title,
+  interactive = true,
 }: Readonly<TitleItemProps>): ReactElement {
   const navigate = useNavigate();
   const overview = useMemo(() => {
@@ -33,7 +35,11 @@ export default function TitleItem({
           boxShadow: '0 12px 32px rgba(0,0,0,0.5)',
         },
       }}
-      onClick={() => navigate({ to: `/title/${title.media_type}/${title.id}` })}
+      onClick={
+        interactive
+          ? () => navigate({ to: `/title/${title.media_type}/${title.id}` })
+          : undefined
+      }
       actionAreaProps={{
         sx: {
           '&:hover': {

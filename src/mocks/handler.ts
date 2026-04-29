@@ -1,4 +1,6 @@
-import { http, HttpResponse } from 'msw';
+import { http, HttpResponse, delay } from 'msw';
+
+const SKELETON_DEMO_DELAY_MS = 2000;
 import type { SearchResult } from '../api/SearchApi.ts';
 import type { Provider, TitleDetails } from '../api/TitleApi.ts';
 import type { TrendingMovie } from '../api/TrendingApi.ts';
@@ -78,7 +80,7 @@ const mockTitleDetails: TitleDetails = {
 };
 
 export const handlers = [
-  http.get('*/search', ({ request }) => {
+  http.get('*/search', async ({ request }) => {
     console.log('MSW intercepted: ', request.url);
     const url = new URL(request.url);
     const name = url.searchParams.get('name');
@@ -87,6 +89,7 @@ export const handlers = [
       return HttpResponse.json([]);
     }
 
+    await delay(SKELETON_DEMO_DELAY_MS);
     return HttpResponse.json(mockSearchResults);
   }),
 
@@ -108,11 +111,12 @@ export const handlers = [
     return HttpResponse.json(mockPopular);
   }),
 
-  http.get('*/movie/:id/providers', ({ request }) => {
+  http.get('*/movie/:id/providers', async ({ request }) => {
     console.log('MSW intercepted: ', request.url);
     const url = new URL(request.url);
     const region = url.searchParams.get('region');
 
+    await delay(SKELETON_DEMO_DELAY_MS);
     if (region) {
       return HttpResponse.json([mockProviders[0]]);
     }
@@ -120,11 +124,12 @@ export const handlers = [
     return HttpResponse.json(mockProviders);
   }),
 
-  http.get('*/tv/:id/providers', ({ request }) => {
+  http.get('*/tv/:id/providers', async ({ request }) => {
     console.log('MSW intercepted: ', request.url);
     const url = new URL(request.url);
     const region = url.searchParams.get('region');
 
+    await delay(SKELETON_DEMO_DELAY_MS);
     if (region) {
       return HttpResponse.json([mockProviders[0]]);
     }

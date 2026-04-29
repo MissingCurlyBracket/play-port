@@ -1,5 +1,6 @@
 import { StrictMode } from 'react';
 import './index.css';
+import './bones/registry.ts';
 import {
   createHashHistory,
   createRouter,

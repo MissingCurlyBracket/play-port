@@ -28,6 +28,11 @@ Live: https://missingcurlybracket.github.io/play-port/
 - Class-based API clients in `src/api/` (`SearchApi`, `TitleApi`, `RegionApi`,
   `ProviderApi`) injected through router context
 - [MSW](https://mswjs.io/) handlers in `src/mocks/` mock the backend in dev mode
+  (the `/search` and provider endpoints add a 2 s delay so skeleton loaders are
+  visible while developing)
+- [boneyard-js](https://www.npmjs.com/package/boneyard-js) skeleton loaders
+  for `TitleItem` and `SourceItem`. Bone shapes live in `src/bones/` and are
+  captured from `src/routes/dev/bones.tsx` via the CLI
 
 ### Backend (`functions/`)
 
@@ -69,6 +74,7 @@ npx serverless offline
 | Tests with UI    | `npm run test:ui`                     |
 | Single test file | `npx vitest run path/to/file.test.ts` |
 | Local backend    | `npx serverless offline`              |
+| Capture bones    | `npm run capture-bones`               |
 | Deploy frontend  | `npm run deploy`                      |
 
 ## Project layout

@@ -8,6 +8,7 @@ interface BackdropHeroProps {
   gradientDirection?: GradientDirection;
   blur?: number;
   height?: string | number;
+  fixed?: boolean;
   children?: ReactNode;
   sx?: object;
 }
@@ -24,16 +25,35 @@ export default function BackdropHero({
   gradientDirection = 'to-bottom',
   blur = 0,
   height = '60vh',
+  fixed = false,
   children,
   sx,
 }: Readonly<BackdropHeroProps>) {
+  const layerSx = fixed
+    ? {
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh',
+        zIndex: 0,
+        pointerEvents: 'none',
+      }
+    : {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        height,
+      };
+
   return (
     <BaseBox
       sx={{
         position: 'relative',
         width: '100%',
         minHeight: height,
-        overflow: 'hidden',
+        overflow: fixed ? 'visible' : 'hidden',
         ...sx,
       }}
     >
@@ -41,8 +61,7 @@ export default function BackdropHero({
         <BaseBox
           aria-hidden
           sx={{
-            position: 'absolute',
-            inset: 0,
+            ...layerSx,
             backgroundImage: `url(${backdropUrl})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
@@ -55,8 +74,7 @@ export default function BackdropHero({
       <BaseBox
         aria-hidden
         sx={{
-          position: 'absolute',
-          inset: 0,
+          ...layerSx,
           background: GRADIENTS[gradientDirection],
         }}
       />

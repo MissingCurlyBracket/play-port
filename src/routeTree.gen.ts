@@ -10,11 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DevBonesRouteImport } from './routes/dev/bones'
 import { Route as TitleTypeIdRouteImport } from './routes/title/$type/$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DevBonesRoute = DevBonesRouteImport.update({
+  id: '/dev/bones',
+  path: '/dev/bones',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TitleTypeIdRoute = TitleTypeIdRouteImport.update({
@@ -25,27 +31,31 @@ const TitleTypeIdRoute = TitleTypeIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/dev/bones': typeof DevBonesRoute
   '/title/$type/$id': typeof TitleTypeIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/dev/bones': typeof DevBonesRoute
   '/title/$type/$id': typeof TitleTypeIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/dev/bones': typeof DevBonesRoute
   '/title/$type/$id': typeof TitleTypeIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/title/$type/$id'
+  fullPaths: '/' | '/dev/bones' | '/title/$type/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/title/$type/$id'
-  id: '__root__' | '/' | '/title/$type/$id'
+  to: '/' | '/dev/bones' | '/title/$type/$id'
+  id: '__root__' | '/' | '/dev/bones' | '/title/$type/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DevBonesRoute: typeof DevBonesRoute
   TitleTypeIdRoute: typeof TitleTypeIdRoute
 }
 
@@ -56,6 +66,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dev/bones': {
+      id: '/dev/bones'
+      path: '/dev/bones'
+      fullPath: '/dev/bones'
+      preLoaderRoute: typeof DevBonesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/title/$type/$id': {
@@ -70,6 +87,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DevBonesRoute: DevBonesRoute,
   TitleTypeIdRoute: TitleTypeIdRoute,
 }
 export const routeTree = rootRouteImport

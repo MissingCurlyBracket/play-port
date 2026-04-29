@@ -3,6 +3,12 @@ import MainPage from '../pages/MainPage.tsx';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 
+let cachedBackdropSeed: number | null = null;
+function getBackdropSeed(): number {
+  if (cachedBackdropSeed === null) cachedBackdropSeed = Math.random();
+  return cachedBackdropSeed;
+}
+
 export const Route = createFileRoute('/')({
   component: Index,
   loader: async ({ context: { queryClient, regionApi, trendingApi } }) => {
@@ -23,7 +29,7 @@ export function Index() {
   const { searchApi, regionApi, providerApi, trendingApi, popularApi } =
     Route.useRouteContext();
   const [error, setError] = useState<Error | null>(null);
-  const [backdropSeed] = useState(() => Math.random());
+  const [backdropSeed] = useState(getBackdropSeed);
 
   const { data: regions, isLoading: regionsLoading } = useQuery({
     queryKey: ['regions'],

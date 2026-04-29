@@ -1,5 +1,6 @@
 import { type ReactElement, useEffect, useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
+import SkeletonCard from '../components/atoms/SkeletonCard.tsx';
 import type { SearchResult } from '../api/SearchApi.ts';
 import type { Provider } from '../api/TitleApi.ts';
 import type { Region } from '../api/RegionApi.ts';
@@ -59,6 +60,15 @@ export default function MainPage({
       return !!p && p.length > 0;
     },
   );
+
+  const skeletonTitle: SearchResult = {
+    id: 0,
+    title: 'Loading title placeholder text',
+    overview:
+      'Loading overview placeholder text that fills out the three-line clamp so the skeleton wrapper inherits a height matching the captured bones layout for predictable shimmer rendering.',
+    release_date: '0000',
+    media_type: 'movie',
+  };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalRegion, setModalRegion] = useState<Region | null>(null);
@@ -261,7 +271,29 @@ export default function MainPage({
         />
       }
       results={
-        searchResults.length > 0 ? (
+        isLoading ? (
+          <BaseBox
+            sx={{
+              width: '100%',
+              maxWidth: 820,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'stretch',
+              gap: 1.5,
+              '& .MuiCardContent-root:last-child': { paddingBottom: 2 },
+            }}
+          >
+            {Array.from({ length: 5 }).map((_, i) => (
+              <SkeletonCard
+                key={`title-skeleton-${i}`}
+                name="title-item"
+                loading
+              >
+                <TitleItem title={skeletonTitle} interactive={false} />
+              </SkeletonCard>
+            ))}
+          </BaseBox>
+        ) : searchResults.length > 0 ? (
           <BaseBox
             sx={{
               width: '100%',
@@ -277,8 +309,7 @@ export default function MainPage({
             ))}
           </BaseBox>
         ) : (
-          debouncedSearch &&
-          !isLoading && (
+          debouncedSearch && (
             <BaseBox sx={{ textAlign: 'center', py: 4 }}>
               <BaseTypography variant="h6" color="text.secondary">
                 No results found for "{searchTerm}"

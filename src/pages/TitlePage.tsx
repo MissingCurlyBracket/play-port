@@ -1,3 +1,4 @@
+import SkeletonCard from '../components/atoms/SkeletonCard.tsx';
 import type { Provider, TitleDetails } from '../api/TitleApi.ts';
 import SourceItem from '../components/molecules/SourceItem.tsx';
 import BaseBox from '../components/atoms/BaseBox.tsx';
@@ -10,11 +11,13 @@ import convertType from '../helpers/convertType.ts';
 export interface TitlePageProps {
   title?: TitleDetails;
   providers?: Provider[];
+  providersLoading?: boolean;
 }
 
 export default function TitlePage({
   title,
   providers,
+  providersLoading,
 }: Readonly<TitlePageProps>) {
   return (
     <BaseBox sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
@@ -121,7 +124,29 @@ export default function TitlePage({
             Available on
           </BaseTypography>
         </BaseBox>
-        {providers && providers.length > 0 ? (
+        {providersLoading ? (
+          <BaseBox
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: {
+                xs: 'repeat(auto-fill, minmax(140px, 1fr))',
+                md: 'repeat(auto-fill, minmax(180px, 1fr))',
+              },
+              gap: 2,
+              px: { xs: 1, md: 0 },
+            }}
+          >
+            {Array.from({ length: 5 }).map((_, i) => (
+              <SkeletonCard
+                key={`source-skeleton-${i}`}
+                name="source-item"
+                loading
+              >
+                <SourceItem name="Loading provider" />
+              </SkeletonCard>
+            ))}
+          </BaseBox>
+        ) : providers && providers.length > 0 ? (
           <BaseBox
             sx={{
               display: 'grid',

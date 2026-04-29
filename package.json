@@ -12,6 +12,7 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "typecheck": "tsc --noEmit",
+    "capture-bones": "boneyard-js build 'http://localhost:5173/play-port/#/dev/bones' && node scripts/remap-bones.mjs",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
   },
@@ -26,6 +27,7 @@
     "@tanstack/react-query-devtools": "^5.84.1",
     "@tanstack/react-router": "^1.130.12",
     "@tanstack/react-router-devtools": "^1.130.13",
+    "boneyard-js": "^1.8.1",
     "eslint-plugin-react": "^7.37.5",
     "gh-pages": "^6.3.0",
     "react": "^19.1.0",

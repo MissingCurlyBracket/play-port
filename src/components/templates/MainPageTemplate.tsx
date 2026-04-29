@@ -30,6 +30,7 @@ export default function MainPageTemplate({
         gradientDirection="to-bottom"
         blur={16}
         height="100vh"
+        fixed
       >
         <BaseBox
           sx={{
