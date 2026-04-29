@@ -30,7 +30,7 @@ export default function BackdropHero({
   sx,
 }: Readonly<BackdropHeroProps>) {
   const layerSx = fixed
-    ? {
+    ? ({
         position: 'fixed',
         top: 0,
         left: 0,
@@ -38,14 +38,14 @@ export default function BackdropHero({
         height: '100vh',
         zIndex: 0,
         pointerEvents: 'none',
-      }
-    : {
+      } as const)
+    : ({
         position: 'absolute',
         top: 0,
         left: 0,
         right: 0,
         height,
-      };
+      } as const);
 
   return (
     <BaseBox
