@@ -93,6 +93,10 @@ interface TmdbTrendingItem {
   poster_path?: string;
 }
 
+interface TmdbExternalIds {
+  imdb_id?: string;
+}
+
 interface TmdbMovieDetails {
   id: number;
   title?: string;
@@ -101,6 +105,8 @@ interface TmdbMovieDetails {
   release_date?: string;
   backdrop_path?: string;
   poster_path?: string;
+  imdb_id?: string;
+  external_ids?: TmdbExternalIds;
 }
 
 interface TmdbTvDetails {
@@ -111,6 +117,24 @@ interface TmdbTvDetails {
   first_air_date?: string;
   backdrop_path?: string;
   poster_path?: string;
+  external_ids?: TmdbExternalIds;
+}
+
+async function getImdbRating(imdbId: string): Promise<string | undefined> {
+  const key = process.env.OMDB_API_KEY;
+  if (!key) return undefined;
+  try {
+    const res = await fetch(
+      `https://www.omdbapi.com/?i=${encodeURIComponent(imdbId)}&apikey=${encodeURIComponent(key)}`,
+    );
+    if (!res.ok) return undefined;
+    const data = (await res.json()) as { imdbRating?: string };
+    return data.imdbRating && data.imdbRating !== 'N/A'
+      ? data.imdbRating
+      : undefined;
+  } catch {
+    return undefined;
+  }
 }
 
 export const search = async (event: APIGatewayProxyEvent) => {
@@ -609,7 +633,7 @@ export const getMovieDetails = async (event: APIGatewayProxyEvent) => {
 
   try {
     const response = await fetch(
-      `https://api.themoviedb.org/3/movie/${movieId}`,
+      `https://api.themoviedb.org/3/movie/${movieId}?append_to_response=external_ids`,
       {
         method: 'GET',
         headers: {
@@ -628,6 +652,8 @@ export const getMovieDetails = async (event: APIGatewayProxyEvent) => {
     }
 
     const data = (await response.json()) as TmdbMovieDetails;
+    const imdbId = data.imdb_id || data.external_ids?.imdb_id;
+    const imdbRating = imdbId ? await getImdbRating(imdbId) : undefined;
 
     const details = {
       id: data.id,
@@ -641,6 +667,8 @@ export const getMovieDetails = async (event: APIGatewayProxyEvent) => {
       poster_url: data.poster_path
         ? `https://image.tmdb.org/t/p/w500/${data.poster_path}`
         : '',
+      imdb_id: imdbId,
+      imdb_rating: imdbRating,
     };
 
     return {
@@ -671,7 +699,7 @@ export const getTvDetails = async (event: APIGatewayProxyEvent) => {
 
   try {
     const response = await fetch(
-      `https://api.themoviedb.org/3/tv/${seriesId}`,
+      `https://api.themoviedb.org/3/tv/${seriesId}?append_to_response=external_ids`,
       {
         method: 'GET',
         headers: {
@@ -690,6 +718,8 @@ export const getTvDetails = async (event: APIGatewayProxyEvent) => {
     }
 
     const data = (await response.json()) as TmdbTvDetails;
+    const imdbId = data.external_ids?.imdb_id;
+    const imdbRating = imdbId ? await getImdbRating(imdbId) : undefined;
 
     const details = {
       id: data.id,
@@ -705,6 +735,8 @@ export const getTvDetails = async (event: APIGatewayProxyEvent) => {
       poster_url: data.poster_path
         ? `https://image.tmdb.org/t/p/w500/${data.poster_path}`
         : '',
+      imdb_id: imdbId,
+      imdb_rating: imdbRating,
     };
 
     return {

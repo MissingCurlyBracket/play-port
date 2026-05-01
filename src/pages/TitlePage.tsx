@@ -8,6 +8,7 @@ import BaseContainer from '../components/atoms/BaseContainer.tsx';
 import BackdropHero from '../components/molecules/BackdropHero.tsx';
 import convertType from '../helpers/convertType.ts';
 import getProviderUrl from '../helpers/getProviderUrl.ts';
+import getImdbUrl from '../helpers/getImdbUrl.ts';
 
 export interface TitlePageProps {
   title?: TitleDetails;
@@ -75,6 +76,28 @@ export default function TitlePage({
                     >
                       {title.release_date}
                     </BaseTypography>
+                  )}
+                  {title.imdb_id && (
+                    <BaseChip
+                      component="a"
+                      href={getImdbUrl(title.imdb_id)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      clickable
+                      size="small"
+                      label={
+                        title.imdb_rating
+                          ? `IMDb ${title.imdb_rating}`
+                          : 'IMDb'
+                      }
+                      sx={{
+                        backgroundColor: '#F5C518',
+                        color: '#000',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                        '&:hover': { backgroundColor: '#e0b410' },
+                      }}
+                    />
                   )}
                 </BaseBox>
                 <BaseTypography

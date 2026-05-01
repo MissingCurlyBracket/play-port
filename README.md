@@ -57,10 +57,11 @@ npx serverless offline
 
 ### Environment variables
 
-| Variable                 | Scope             | Purpose                       |
-|--------------------------|-------------------|-------------------------------|
-| `VITE_API_BASE_URL`      | frontend (`.env`) | Backend API URL the SPA calls |
-| `TMDB_READ_ACCESS_TOKEN` | backend           | TMDB v3 bearer token          |
+| Variable                 | Scope             | Purpose                                       |
+|--------------------------|-------------------|-----------------------------------------------|
+| `VITE_API_BASE_URL`      | frontend (`.env`) | Backend API URL the SPA calls                 |
+| `TMDB_READ_ACCESS_TOKEN` | backend           | TMDB v3 bearer token                          |
+| `OMDB_API_KEY`           | backend           | OMDB API key for IMDB ratings (optional)      |
 
 ## Scripts
 

@@ -77,6 +77,8 @@ const mockTitleDetails: TitleDetails = {
   backdrop_url:
     'https://placehold.co/1280x720/0f0a1f/8c72d0?text=Title+Backdrop',
   poster_url: 'https://placehold.co/500x750/1a1430/c9beec?text=Alpha+Papa',
+  imdb_id: 'tt2378281',
+  imdb_rating: '6.6',
 };
 
 export const handlers = [

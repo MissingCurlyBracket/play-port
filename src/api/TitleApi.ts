@@ -12,6 +12,8 @@ export interface TitleDetails {
   media_type: 'movie' | 'tv';
   backdrop_url: string;
   poster_url: string;
+  imdb_id?: string;
+  imdb_rating?: string;
 }
 
 export interface TitleApiInterface {

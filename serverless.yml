@@ -6,6 +6,7 @@ provider:
   region: eu-central-1
   environment:
     TMDB_READ_ACCESS_TOKEN: ${env:TMDB_READ_ACCESS_TOKEN}
+    OMDB_API_KEY: ${env:OMDB_API_KEY}
 
 functions:
   search:
