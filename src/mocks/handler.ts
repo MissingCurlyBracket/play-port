@@ -111,27 +111,29 @@ export const handlers = [
     return HttpResponse.json(mockPopular);
   }),
 
-  http.get('*/movie/:id/providers', async ({ request }) => {
+  http.get('*/movie/:id/providers', async ({ request, params }) => {
     console.log('MSW intercepted: ', request.url);
     const url = new URL(request.url);
     const region = url.searchParams.get('region');
 
     await delay(SKELETON_DEMO_DELAY_MS);
     if (region) {
-      return HttpResponse.json([mockProviders[0]]);
+      const link = `https://www.themoviedb.org/movie/${params.id}/watch?locale=${region}`;
+      return HttpResponse.json([{ ...mockProviders[0], link }]);
     }
 
     return HttpResponse.json(mockProviders);
   }),
 
-  http.get('*/tv/:id/providers', async ({ request }) => {
+  http.get('*/tv/:id/providers', async ({ request, params }) => {
     console.log('MSW intercepted: ', request.url);
     const url = new URL(request.url);
     const region = url.searchParams.get('region');
 
     await delay(SKELETON_DEMO_DELAY_MS);
     if (region) {
-      return HttpResponse.json([mockProviders[0]]);
+      const link = `https://www.themoviedb.org/tv/${params.id}/watch?locale=${region}`;
+      return HttpResponse.json([{ ...mockProviders[0], link }]);
     }
 
     return HttpResponse.json(mockProviders);

@@ -163,6 +163,7 @@ export default function TitlePage({
                 key={provider.provider_id}
                 name={provider.provider_name}
                 logo={provider.logo_url}
+                url={provider.link}
               />
             ))}
           </BaseBox>

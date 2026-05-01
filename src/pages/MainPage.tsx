@@ -7,8 +7,11 @@ import type { Region } from '../api/RegionApi.ts';
 import type { PopularTitle } from '../api/PopularApi.ts';
 import { useDebounce } from 'use-debounce';
 import SettingsIcon from '@mui/icons-material/Settings';
+import CloseIcon from '@mui/icons-material/Close';
+import { IconButton } from '@mui/material';
 import BaseButton from '../components/atoms/BaseButton.tsx';
 import BaseBox from '../components/atoms/BaseBox.tsx';
+import BaseTooltip from '../components/atoms/BaseTooltip.tsx';
 import BaseTypography from '../components/atoms/BaseTypography.tsx';
 import TitleItem from '../components/molecules/TitleItem.tsx';
 import SearchBar from '../components/molecules/SearchBar.tsx';
@@ -60,6 +63,8 @@ export default function MainPage({
       return !!p && p.length > 0;
     },
   );
+  const [tooltipDismissed, setTooltipDismissed] = useState(false);
+  const hasPreferences = !!selectedRegion && hasSelectedProviders;
 
   const skeletonTitle: SearchResult = {
     id: 0,
@@ -217,34 +222,69 @@ export default function MainPage({
     <MainPageTemplate
       backdropUrl={backdropUrl}
       header={
-        <BaseButton
-          variant="outlined"
-          color="primary"
-          startIcon={<SettingsIcon />}
-          onClick={handleOpenModal}
-          sx={{
-            backgroundColor: 'rgba(26, 20, 48, 0.6)',
-            backdropFilter: 'blur(8px)',
-            borderColor: 'rgba(169, 148, 222, 0.4)',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.45)',
-            transition:
-              'border-color 160ms ease, box-shadow 160ms ease, color 160ms ease',
-            '&:hover': {
-              backgroundColor: 'rgba(26, 20, 48, 0.6)',
-              borderColor: 'primary.main',
-              boxShadow: '0 8px 36px rgba(140, 114, 208, 0.3)',
-              color: 'primary.light',
-            },
-          }}
+        <BaseTooltip
+          open={!hasPreferences && !tooltipDismissed && !isModalOpen}
+          arrow
+          placement="bottom"
+          disableHoverListener
+          disableFocusListener
+          disableTouchListener
+          slotProps={{ tooltip: { sx: { pointerEvents: 'auto' } } }}
+          title={
+            <BaseBox
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 0.5,
+                pl: 0.5,
+              }}
+            >
+              <BaseTypography variant="body2">
+                Set your preferences to get started
+              </BaseTypography>
+              <IconButton
+                size="small"
+                aria-label="Dismiss tooltip"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setTooltipDismissed(true);
+                }}
+                sx={{ color: 'inherit', p: 0.25 }}
+              >
+                <CloseIcon fontSize="small" />
+              </IconButton>
+            </BaseBox>
+          }
         >
-          Preferences
-        </BaseButton>
+          <BaseButton
+            variant="outlined"
+            color="primary"
+            startIcon={<SettingsIcon />}
+            onClick={handleOpenModal}
+            sx={{
+              backgroundColor: 'rgba(26, 20, 48, 0.6)',
+              backdropFilter: 'blur(8px)',
+              borderColor: 'rgba(169, 148, 222, 0.4)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.45)',
+              transition:
+                'border-color 160ms ease, box-shadow 160ms ease, color 160ms ease',
+              '&:hover': {
+                backgroundColor: 'rgba(26, 20, 48, 0.6)',
+                borderColor: 'primary.main',
+                boxShadow: '0 8px 36px rgba(140, 114, 208, 0.3)',
+                color: 'primary.light',
+              },
+            }}
+          >
+            Preferences
+          </BaseButton>
+        </BaseTooltip>
       }
       suggestionButtons={
         <SuggestionButtons
           onSuggest={handleSuggest}
           loadingType={suggestLoading}
-          hasPreferences={!!selectedRegion && hasSelectedProviders}
+          hasPreferences={hasPreferences}
         />
       }
       searchBar={
