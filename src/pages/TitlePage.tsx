@@ -7,6 +7,7 @@ import BaseChip from '../components/atoms/BaseChip.tsx';
 import BaseContainer from '../components/atoms/BaseContainer.tsx';
 import BackdropHero from '../components/molecules/BackdropHero.tsx';
 import convertType from '../helpers/convertType.ts';
+import getProviderUrl from '../helpers/getProviderUrl.ts';
 
 export interface TitlePageProps {
   title?: TitleDetails;
@@ -163,7 +164,7 @@ export default function TitlePage({
                 key={provider.provider_id}
                 name={provider.provider_name}
                 logo={provider.logo_url}
-                url={provider.link}
+                url={getProviderUrl(provider.provider_id)}
               />
             ))}
           </BaseBox>

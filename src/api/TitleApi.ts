@@ -2,7 +2,6 @@ export interface Provider {
   provider_id: number;
   provider_name: string;
   logo_url: string;
-  link?: string;
 }
 
 export interface TitleDetails {

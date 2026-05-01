@@ -237,7 +237,6 @@ export const getMovieProviders = async (event: APIGatewayProxyEvent) => {
     const data = (await response.json()) as TmdbProvidersResponse;
     if (region) {
       if (data.results && data.results[region]) {
-        const regionLink = data.results[region]!.link;
         const providers = (data.results[region]!.flatrate || [])
           .filter(
             (provider) => !providerIds || providerIds.has(provider.provider_id),
@@ -248,7 +247,6 @@ export const getMovieProviders = async (event: APIGatewayProxyEvent) => {
             logo_url: provider.logo_path
               ? `https://image.tmdb.org/t/p/w92/${provider.logo_path}`
               : '',
-            link: regionLink,
           }));
 
         return {
@@ -346,7 +344,6 @@ export const getTvProviders = async (event: APIGatewayProxyEvent) => {
     const data = (await response.json()) as TmdbProvidersResponse;
     if (region) {
       if (data.results && data.results[region]) {
-        const regionLink = data.results[region]!.link;
         const providers = (data.results[region]!.flatrate || [])
           .filter(
             (provider) => !providerIds || providerIds.has(provider.provider_id),
@@ -357,7 +354,6 @@ export const getTvProviders = async (event: APIGatewayProxyEvent) => {
             logo_url: provider.logo_path
               ? `https://image.tmdb.org/t/p/w92/${provider.logo_path}`
               : '',
-            link: regionLink,
           }));
 
         return {
