@@ -78,26 +78,29 @@ export default function TitlePage({
                     </BaseTypography>
                   )}
                   {title.imdb_id && (
-                    <BaseChip
-                      component="a"
+                    <a
                       href={getImdbUrl(title.imdb_id)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      clickable
-                      size="small"
-                      label={
-                        title.imdb_rating
-                          ? `IMDb ${title.imdb_rating}`
-                          : 'IMDb'
-                      }
-                      sx={{
-                        backgroundColor: '#F5C518',
-                        color: '#000',
-                        fontWeight: 700,
-                        cursor: 'pointer',
-                        '&:hover': { backgroundColor: '#e0b410' },
-                      }}
-                    />
+                      style={{ textDecoration: 'none' }}
+                    >
+                      <BaseChip
+                        clickable
+                        size="small"
+                        label={
+                          title.imdb_rating
+                            ? `IMDb ${title.imdb_rating}`
+                            : 'IMDb'
+                        }
+                        sx={{
+                          backgroundColor: '#F5C518',
+                          color: '#000',
+                          fontWeight: 700,
+                          cursor: 'pointer',
+                          '&:hover': { backgroundColor: '#e0b410' },
+                        }}
+                      />
+                    </a>
                   )}
                 </BaseBox>
                 <BaseTypography
