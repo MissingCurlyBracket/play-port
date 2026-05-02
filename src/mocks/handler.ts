@@ -79,6 +79,14 @@ const mockTitleDetails: TitleDetails = {
   poster_url: 'https://placehold.co/500x750/1a1430/c9beec?text=Alpha+Papa',
   imdb_id: 'tt2378281',
   imdb_rating: '6.6',
+  genre: 'Comedy, Crime, Thriller',
+  director: 'Declan Lowney',
+  actors: [
+    'Steve Coogan',
+    'Colm Meaney',
+    'Felicity Montagu',
+    'Anna Maxwell Martin',
+  ],
 };
 
 export const handlers = [

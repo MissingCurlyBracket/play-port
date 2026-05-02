@@ -61,7 +61,7 @@ npx serverless offline
 |--------------------------|-------------------|-----------------------------------------------|
 | `VITE_API_BASE_URL`      | frontend (`.env`) | Backend API URL the SPA calls                 |
 | `TMDB_READ_ACCESS_TOKEN` | backend           | TMDB v3 bearer token                          |
-| `OMDB_API_KEY`           | backend           | OMDB API key for IMDB ratings (optional)      |
+| `OMDB_API_KEY`           | backend           | OMDB API key for IMDb rating, genre, director, and cast (optional) |
 
 ## Scripts
 

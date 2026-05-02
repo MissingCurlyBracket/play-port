@@ -14,6 +14,9 @@ export interface TitleDetails {
   poster_url: string;
   imdb_id?: string;
   imdb_rating?: string;
+  genre?: string;
+  director?: string;
+  actors?: string[];
 }
 
 export interface TitleApiInterface {

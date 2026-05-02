@@ -64,137 +64,175 @@ export default function TitlePage({
         >
           <BaseBox
             sx={{
-              maxWidth: { xs: '100%', md: '55%' },
+              width: '100%',
               display: 'flex',
-              flexDirection: 'column',
-              gap: 2,
+              flexDirection: { xs: 'column', md: 'row' },
+              alignItems: { xs: 'stretch', md: 'flex-end' },
+              gap: { xs: 2, md: 4 },
             }}
           >
-            {title && (
-              <>
-                <BaseBox
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 1.5,
-                    flexWrap: 'wrap',
-                  }}
-                >
-                  <BaseChip
-                    label={convertType(title.media_type)}
-                    size="small"
-                    variant="outlined"
-                    color="primary"
+            <BaseBox
+              sx={{
+                flex: { xs: '1 1 auto', md: '0 1 auto' },
+                maxWidth: { md: 640 },
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 2,
+              }}
+            >
+              {title && (
+                <>
+                  <BaseBox
                     sx={{
-                      backgroundColor: 'rgba(26, 20, 48, 0.6)',
-                      backdropFilter: 'blur(8px)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1.5,
+                      flexWrap: 'wrap',
                     }}
-                  />
-                  {title.release_date && (
-                    <BaseTypography
-                      variant="body2"
+                  >
+                    <BaseChip
+                      label={convertType(title.media_type)}
+                      size="small"
+                      variant="outlined"
+                      color="primary"
                       sx={{
-                        color: 'text.secondary',
-                        textShadow: '0 2px 8px rgba(0,0,0,0.8)',
+                        backgroundColor: 'rgba(26, 20, 48, 0.6)',
+                        backdropFilter: 'blur(8px)',
                       }}
-                    >
-                      {title.release_date}
-                    </BaseTypography>
-                  )}
-                  {title.imdb_id && (
-                    <a
-                      href={getImdbUrl(title.imdb_id)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ textDecoration: 'none' }}
-                    >
-                      <BaseChip
-                        clickable
-                        size="small"
-                        label={
-                          title.imdb_rating
-                            ? `IMDb ${title.imdb_rating}`
-                            : 'IMDb'
-                        }
+                    />
+                    {title.release_date && (
+                      <BaseTypography
+                        variant="body2"
                         sx={{
-                          backgroundColor: '#F5C518',
-                          color: '#000',
-                          fontWeight: 700,
-                          cursor: 'pointer',
-                          '&:hover': { backgroundColor: '#e0b410' },
-                        }}
-                      />
-                    </a>
-                  )}
-                </BaseBox>
-                <BaseTypography
-                  variant="h2"
-                  component="h1"
-                  sx={{
-                    fontWeight: 800,
-                    fontSize: { xs: '2rem', md: '3.25rem' },
-                    lineHeight: 1.05,
-                    textShadow: '0 4px 24px rgba(0,0,0,0.85)',
-                  }}
-                >
-                  {title.title}
-                </BaseTypography>
-                {title.overview && (
-                  <BaseBox>
-                    <BaseTypography
-                      ref={overviewRef}
-                      variant="body1"
-                      sx={{
-                        color: 'text.secondary',
-                        maxWidth: 640,
-                        lineHeight: 1.65,
-                        textShadow: '0 2px 12px rgba(0,0,0,0.8)',
-                        ...(overviewExpanded
-                          ? {}
-                          : {
-                              display: '-webkit-box',
-                              WebkitLineClamp: 4,
-                              WebkitBoxOrient: 'vertical',
-                              overflow: 'hidden',
-                            }),
-                      }}
-                    >
-                      {title.overview}
-                    </BaseTypography>
-                    {(overviewClamped || overviewExpanded) && (
-                      <BaseBox
-                        component="button"
-                        type="button"
-                        onClick={() => setOverviewExpanded((prev) => !prev)}
-                        sx={{
-                          mt: 0.5,
-                          background: 'none',
-                          border: 'none',
-                          padding: 0,
-                          color: 'primary.light',
-                          fontSize: '0.875rem',
-                          fontWeight: 600,
-                          cursor: 'pointer',
-                          textShadow: '0 2px 12px rgba(0,0,0,0.8)',
-                          '&:hover': {
-                            textDecoration: 'underline',
-                            color: 'primary.main',
-                          },
-                          '&:focus-visible': {
-                            outline: '2px solid',
-                            outlineColor: 'primary.light',
-                            outlineOffset: 2,
-                            borderRadius: 1,
-                          },
+                          color: 'text.secondary',
+                          textShadow: '0 2px 8px rgba(0,0,0,0.8)',
                         }}
                       >
-                        {overviewExpanded ? 'Show less' : 'Show more'}
-                      </BaseBox>
+                        {title.release_date}
+                      </BaseTypography>
                     )}
                   </BaseBox>
-                )}
-              </>
-            )}
+                  <BaseTypography
+                    variant="h2"
+                    component="h1"
+                    sx={{
+                      fontWeight: 800,
+                      fontSize: { xs: '2rem', md: '3.25rem' },
+                      lineHeight: 1.05,
+                      textShadow: '0 4px 24px rgba(0,0,0,0.85)',
+                    }}
+                  >
+                    {title.title}
+                  </BaseTypography>
+                  {title.overview && (
+                    <BaseBox>
+                      <BaseTypography
+                        ref={overviewRef}
+                        variant="body1"
+                        sx={{
+                          color: 'text.secondary',
+                          maxWidth: 640,
+                          lineHeight: 1.65,
+                          textShadow: '0 2px 12px rgba(0,0,0,0.8)',
+                          ...(overviewExpanded
+                            ? {}
+                            : {
+                                display: '-webkit-box',
+                                WebkitLineClamp: 4,
+                                WebkitBoxOrient: 'vertical',
+                                overflow: 'hidden',
+                              }),
+                        }}
+                      >
+                        {title.overview}
+                      </BaseTypography>
+                      {(overviewClamped || overviewExpanded) && (
+                        <BaseBox
+                          component="button"
+                          type="button"
+                          onClick={() => setOverviewExpanded((prev) => !prev)}
+                          sx={{
+                            mt: 0.5,
+                            background: 'none',
+                            border: 'none',
+                            padding: 0,
+                            color: 'primary.light',
+                            fontSize: '0.875rem',
+                            fontWeight: 600,
+                            cursor: 'pointer',
+                            textShadow: '0 2px 12px rgba(0,0,0,0.8)',
+                            '&:hover': {
+                              textDecoration: 'underline',
+                              color: 'primary.main',
+                            },
+                            '&:focus-visible': {
+                              outline: '2px solid',
+                              outlineColor: 'primary.light',
+                              outlineOffset: 2,
+                              borderRadius: 1,
+                            },
+                          }}
+                        >
+                          {overviewExpanded ? 'Show less' : 'Show more'}
+                        </BaseBox>
+                      )}
+                    </BaseBox>
+                  )}
+                </>
+              )}
+            </BaseBox>
+            {title &&
+              (title.imdb_id ||
+                title.genre ||
+                title.director ||
+                (title.actors && title.actors.length > 0)) && (
+                <BaseBox
+                  sx={{
+                    flex: { xs: '1 1 auto', md: '0 1 320px' },
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 1.25,
+                    textShadow: '0 2px 12px rgba(0,0,0,0.8)',
+                  }}
+                >
+                  {title.imdb_id && (
+                    <BaseBox>
+                      <a
+                        href={getImdbUrl(title.imdb_id)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ textDecoration: 'none' }}
+                      >
+                        <BaseChip
+                          clickable
+                          size="small"
+                          label={
+                            title.imdb_rating
+                              ? `IMDb ${title.imdb_rating}`
+                              : 'IMDb'
+                          }
+                          sx={{
+                            backgroundColor: '#F5C518',
+                            color: '#000',
+                            fontWeight: 700,
+                            cursor: 'pointer',
+                            '&:hover': { backgroundColor: '#e0b410' },
+                          }}
+                        />
+                      </a>
+                    </BaseBox>
+                  )}
+                  {title.genre && (
+                    <InfoRow label="Genre" value={title.genre} />
+                  )}
+                  {title.director && (
+                    <InfoRow label="Director" value={title.director} />
+                  )}
+                  {title.actors && title.actors.length > 0 && (
+                    <InfoRow label="Cast" value={title.actors.join(', ')} />
+                  )}
+                </BaseBox>
+              )}
           </BaseBox>
         </BaseBox>
       </BackdropHero>
@@ -280,6 +318,31 @@ export default function TitlePage({
           </BaseBox>
         )}
       </BaseContainer>
+    </BaseBox>
+  );
+}
+
+function InfoRow({ label, value }: { label: string; value: string }) {
+  return (
+    <BaseBox>
+      <BaseTypography
+        variant="overline"
+        sx={{
+          color: 'primary.light',
+          letterSpacing: '0.18em',
+          fontSize: '0.7rem',
+          display: 'block',
+          lineHeight: 1.4,
+        }}
+      >
+        {label}
+      </BaseTypography>
+      <BaseTypography
+        variant="body2"
+        sx={{ color: 'text.primary', lineHeight: 1.5 }}
+      >
+        {value}
+      </BaseTypography>
     </BaseBox>
   );
 }

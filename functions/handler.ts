@@ -120,7 +120,14 @@ interface TmdbTvDetails {
   external_ids?: TmdbExternalIds;
 }
 
-async function getImdbRating(imdbId: string): Promise<string | undefined> {
+interface OmdbInfo {
+  rating?: string;
+  genre?: string;
+  director?: string;
+  actors?: string[];
+}
+
+async function getImdbInfo(imdbId: string): Promise<OmdbInfo | undefined> {
   const key = process.env.OMDB_API_KEY;
   if (!key) return undefined;
   try {
@@ -128,10 +135,25 @@ async function getImdbRating(imdbId: string): Promise<string | undefined> {
       `https://www.omdbapi.com/?i=${encodeURIComponent(imdbId)}&apikey=${encodeURIComponent(key)}`,
     );
     if (!res.ok) return undefined;
-    const data = (await res.json()) as { imdbRating?: string };
-    return data.imdbRating && data.imdbRating !== 'N/A'
-      ? data.imdbRating
-      : undefined;
+    const data = (await res.json()) as {
+      imdbRating?: string;
+      Genre?: string;
+      Director?: string;
+      Actors?: string;
+    };
+    const clean = (v?: string) => (v && v !== 'N/A' ? v : undefined);
+    const actorsRaw = clean(data.Actors);
+    return {
+      rating: clean(data.imdbRating),
+      genre: clean(data.Genre),
+      director: clean(data.Director),
+      actors: actorsRaw
+        ? actorsRaw
+            .split(',')
+            .map((s) => s.trim())
+            .slice(0, 4)
+        : undefined,
+    };
   } catch {
     return undefined;
   }
@@ -653,7 +675,7 @@ export const getMovieDetails = async (event: APIGatewayProxyEvent) => {
 
     const data = (await response.json()) as TmdbMovieDetails;
     const imdbId = data.imdb_id || data.external_ids?.imdb_id;
-    const imdbRating = imdbId ? await getImdbRating(imdbId) : undefined;
+    const imdbInfo = imdbId ? await getImdbInfo(imdbId) : undefined;
 
     const details = {
       id: data.id,
@@ -668,7 +690,10 @@ export const getMovieDetails = async (event: APIGatewayProxyEvent) => {
         ? `https://image.tmdb.org/t/p/w500/${data.poster_path}`
         : '',
       imdb_id: imdbId,
-      imdb_rating: imdbRating,
+      imdb_rating: imdbInfo?.rating,
+      genre: imdbInfo?.genre,
+      director: imdbInfo?.director,
+      actors: imdbInfo?.actors,
     };
 
     return {
@@ -719,7 +744,7 @@ export const getTvDetails = async (event: APIGatewayProxyEvent) => {
 
     const data = (await response.json()) as TmdbTvDetails;
     const imdbId = data.external_ids?.imdb_id;
-    const imdbRating = imdbId ? await getImdbRating(imdbId) : undefined;
+    const imdbInfo = imdbId ? await getImdbInfo(imdbId) : undefined;
 
     const details = {
       id: data.id,
@@ -736,7 +761,10 @@ export const getTvDetails = async (event: APIGatewayProxyEvent) => {
         ? `https://image.tmdb.org/t/p/w500/${data.poster_path}`
         : '',
       imdb_id: imdbId,
-      imdb_rating: imdbRating,
+      imdb_rating: imdbInfo?.rating,
+      genre: imdbInfo?.genre,
+      director: imdbInfo?.director,
+      actors: imdbInfo?.actors,
     };
 
     return {
