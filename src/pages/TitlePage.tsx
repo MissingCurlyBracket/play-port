@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react';
 import SkeletonCard from '../components/atoms/SkeletonCard.tsx';
 import type { Provider, TitleDetails } from '../api/TitleApi.ts';
 import SourceItem from '../components/molecules/SourceItem.tsx';
@@ -21,6 +22,29 @@ export default function TitlePage({
   providers,
   providersLoading,
 }: Readonly<TitlePageProps>) {
+  const [overviewExpanded, setOverviewExpanded] = useState(false);
+  const [overviewClamped, setOverviewClamped] = useState(false);
+  const [prevOverview, setPrevOverview] = useState(title?.overview);
+  const overviewRef = useRef<HTMLParagraphElement>(null);
+
+  if (prevOverview !== title?.overview) {
+    setPrevOverview(title?.overview);
+    setOverviewExpanded(false);
+    setOverviewClamped(false);
+  }
+
+  useEffect(() => {
+    const el = overviewRef.current;
+    if (!el || overviewExpanded) return;
+    const measure = () => {
+      setOverviewClamped(el.scrollHeight > el.clientHeight + 1);
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [title?.overview, overviewExpanded]);
+
   return (
     <BaseBox sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
       <BackdropHero
@@ -116,21 +140,58 @@ export default function TitlePage({
                   {title.title}
                 </BaseTypography>
                 {title.overview && (
-                  <BaseTypography
-                    variant="body1"
-                    sx={{
-                      color: 'text.secondary',
-                      maxWidth: 640,
-                      lineHeight: 1.65,
-                      textShadow: '0 2px 12px rgba(0,0,0,0.8)',
-                      display: '-webkit-box',
-                      WebkitLineClamp: 4,
-                      WebkitBoxOrient: 'vertical',
-                      overflow: 'hidden',
-                    }}
-                  >
-                    {title.overview}
-                  </BaseTypography>
+                  <BaseBox>
+                    <BaseTypography
+                      ref={overviewRef}
+                      variant="body1"
+                      sx={{
+                        color: 'text.secondary',
+                        maxWidth: 640,
+                        lineHeight: 1.65,
+                        textShadow: '0 2px 12px rgba(0,0,0,0.8)',
+                        ...(overviewExpanded
+                          ? {}
+                          : {
+                              display: '-webkit-box',
+                              WebkitLineClamp: 4,
+                              WebkitBoxOrient: 'vertical',
+                              overflow: 'hidden',
+                            }),
+                      }}
+                    >
+                      {title.overview}
+                    </BaseTypography>
+                    {(overviewClamped || overviewExpanded) && (
+                      <BaseBox
+                        component="button"
+                        type="button"
+                        onClick={() => setOverviewExpanded((prev) => !prev)}
+                        sx={{
+                          mt: 0.5,
+                          background: 'none',
+                          border: 'none',
+                          padding: 0,
+                          color: 'primary.light',
+                          fontSize: '0.875rem',
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                          textShadow: '0 2px 12px rgba(0,0,0,0.8)',
+                          '&:hover': {
+                            textDecoration: 'underline',
+                            color: 'primary.main',
+                          },
+                          '&:focus-visible': {
+                            outline: '2px solid',
+                            outlineColor: 'primary.light',
+                            outlineOffset: 2,
+                            borderRadius: 1,
+                          },
+                        }}
+                      >
+                        {overviewExpanded ? 'Show less' : 'Show more'}
+                      </BaseBox>
+                    )}
+                  </BaseBox>
                 )}
               </>
             )}

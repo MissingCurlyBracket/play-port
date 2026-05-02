@@ -1,5 +1,5 @@
-import { Box, type BoxProps } from '@mui/material';
+import { Box } from '@mui/material';
 
-export default function BaseBox(props: Readonly<BoxProps>) {
-  return <Box {...props} />;
-}
+const BaseBox = Box;
+
+export default BaseBox;

@@ -71,7 +71,7 @@ const mockTitleDetails: TitleDetails = {
   id: 120982,
   title: 'Alan Partridge: Alpha Papa',
   overview:
-    'To save his job, a famous radio DJ gets caught in a siege at his station and has to work with the police to diffuse the situation.',
+    'To save his job, a famous radio DJ gets caught in a siege at his station and has to work with the police to diffuse the situation. When fellow DJ Pat Farrell is sacked by the new corporate overlords of North Norfolk Digital, he returns to the station armed and demanding to be put back on air, sparking a tense hostage stand-off that the local press, the national news, and an opportunistic Alan Partridge all rush to exploit. Wedged between the gunman, the police negotiator, and a horde of cameras gathered outside, Alan finds himself reluctantly elevated from late-night also-ran to crisis spokesperson, and discovers that staying alive may require him to become, briefly, a slightly better person than he has ever been before.',
   release_date: '2013',
   media_type: 'movie',
   backdrop_url:
