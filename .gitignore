@@ -29,3 +29,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# BMAD — personal, installer-managed per-user config (framework + team config are committed)
+_bmad/config.user.toml
+_bmad/**/*.user.toml

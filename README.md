@@ -38,8 +38,10 @@ Live: https://missingcurlybracket.github.io/play-port/
 
 - AWS Lambda functions defined in `serverless.yml`, bundled with esbuild
 - `functions/handler.ts` exports every handler — all of them proxy TMDB API v3
+  (title-detail endpoints also enrich with IMDb data from OMDb)
 - Endpoints: `/search`, `/movie/{movieId}/providers`, `/tv/{seriesId}/providers`,
-  `/regions`, `/providers`
+  `/regions`, `/providers`, `/trending`, `/movie/{movieId}`, `/tv/{seriesId}`,
+  `/popular/movie`, `/popular/tv`
 - Node.js 24.x, deployed to `eu-central-1`
 
 ## Getting started
@@ -98,3 +100,17 @@ serverless.yml  Serverless Framework config for the backend
 Prettier (single quotes, semicolons, trailing commas, 2-space indent, 80-char width)
 and ESLint flat config with TypeScript, React, React Hooks, and Prettier plugins.
 Tests run on Vitest with Chai assertions in a jsdom environment.
+
+## Documentation & AI-assisted development
+
+Generated project documentation lives in [`docs/`](./docs/index.md) — start at
+`docs/index.md`. It covers per-part architecture, the full API contract, data
+models, the component inventory, and dev/deployment guides. These are the context
+files to point AI agents at when planning features.
+
+This repo is set up with [BMAD Method](https://bmadcode.com/) (`bmm` module) for
+agentic, spec-driven development. The agents and workflows are installed as Claude
+Code skills under `.claude/skills/` (all `bmad-*`); BMAD config and scripts live in
+`_bmad/`, and generated planning/implementation artifacts go to `_bmad-output/`.
+Invoke the `bmad-help` skill to get started, then skills like `bmad-prd`,
+`bmad-architecture`, and `bmad-create-epics-and-stories` to plan new work.

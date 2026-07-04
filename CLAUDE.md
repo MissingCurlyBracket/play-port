@@ -35,8 +35,9 @@ Play-port is a streaming service locator that helps users find where to watch mo
 ### Backend (`/functions`)
 
 - AWS Lambda functions defined in `serverless.yml`, built with esbuild
-- `functions/handler.ts` exports all Lambda handlers that proxy TMDB API v3
-- Endpoints: `/search`, `/movie/{movieId}/providers`, `/tv/{seriesId}/providers`, `/regions`, `/providers`
+- `functions/handler.ts` exports all Lambda handlers that proxy TMDB API v3 (detail endpoints also enrich with IMDb data from OMDb)
+- Endpoints: `/search`, `/movie/{movieId}/providers`, `/tv/{seriesId}/providers`, `/regions`, `/providers`, `/trending`, `/movie/{movieId}`, `/tv/{seriesId}`, `/popular/movie`, `/popular/tv`
+- Adding an endpoint requires both a handler export in `functions/handler.ts` and a function entry in `serverless.yml` (plus a matching MSW mock in `src/mocks/handler.ts`)
 - Runtime: Node.js 24.x, deployed to eu-central-1
 
 ### Environment Variables
@@ -49,3 +50,8 @@ Play-port is a streaming service locator that helps users find where to watch mo
 - Prettier: single quotes, semicolons, trailing commas, 2-space indent, 80 char width
 - ESLint flat config with TypeScript, React, React Hooks, and Prettier plugins
 - Test framework: Vitest with Chai assertions and jsdom environment
+
+## Project Documentation & BMAD
+
+- Generated project documentation lives in `docs/` (start at `docs/index.md`): per-part architecture (`architecture-web.md`, `architecture-backend.md`), API contracts, data models, component inventory, and dev/deployment guides. Consult these first when planning changes, and keep them in sync when architecture, endpoints, or components change.
+- This repo uses BMAD Method (`bmm` module) for agentic development. Agents/workflows are installed as Claude Code skills (`.claude/skills/bmad-*`); config/scripts are in `_bmad/`; planning and implementation artifacts are written to `_bmad-output/`. Use the `bmad-help` skill to find the right workflow (e.g. `bmad-prd`, `bmad-architecture`, `bmad-create-epics-and-stories`, `bmad-create-story`, `bmad-dev-story`).

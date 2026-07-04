@@ -1,0 +1,71 @@
+{
+  "repository_type": "multi-part",
+  "generated": "2026-07-05",
+  "generator": "BMAD Method document-project workflow (initial_scan, deep)",
+  "primary_language": "TypeScript",
+  "parts": [
+    {
+      "part_id": "web",
+      "part_name": "Frontend SPA",
+      "project_type_id": "web",
+      "root_path": "src",
+      "entry_point": "src/main.tsx",
+      "purpose": "User-facing React single-page app: search, preferences, title detail, suggestions.",
+      "tech_stack": [
+        "React 19",
+        "TypeScript",
+        "Vite 7",
+        "TanStack Router",
+        "TanStack React Query",
+        "MUI 7",
+        "Tailwind CSS 4",
+        "MSW (dev)",
+        "boneyard-js"
+      ],
+      "deployment": "GitHub Pages (gh-pages), base path /play-port/",
+      "docs": [
+        "architecture-web.md",
+        "component-inventory-web.md"
+      ]
+    },
+    {
+      "part_id": "backend",
+      "part_name": "Serverless API",
+      "project_type_id": "backend",
+      "root_path": "functions",
+      "entry_point": "functions/handler.ts",
+      "purpose": "Stateless AWS Lambda proxy over TMDB (+ OMDb); hides API tokens and reshapes responses.",
+      "tech_stack": [
+        "AWS Lambda (Node.js 24.x)",
+        "Serverless Framework 4",
+        "API Gateway HTTP API",
+        "esbuild",
+        "TypeScript"
+      ],
+      "deployment": "serverless deploy → AWS eu-central-1",
+      "endpoint_count": 10,
+      "docs": [
+        "architecture-backend.md",
+        "api-contracts-backend.md",
+        "data-models-backend.md"
+      ]
+    }
+  ],
+  "integration_points": [
+    {
+      "from": "web",
+      "to": "backend",
+      "type": "HTTP GET (JSON)",
+      "location": "src/api/*.ts",
+      "details": "API client classes call VITE_API_BASE_URL; region/providers preferences forwarded as query params. Intercepted by MSW in dev."
+    },
+    {
+      "from": "backend",
+      "to": "TMDB / OMDb",
+      "type": "Outbound HTTPS fetch",
+      "location": "functions/handler.ts",
+      "details": "TMDB v3 with bearer token; OMDb with api key for IMDb enrichment on detail endpoints."
+    }
+  ],
+  "datastore": "none (stateless; preferences persisted client-side in cookies)"
+}
